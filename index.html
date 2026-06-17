@@ -686,6 +686,140 @@
             .statement-card     { padding: 28px 22px; }
             .closing-card       { padding: 26px 22px; }
         }
+
+        /* ─── Saved / Resume actions on welcome ─── */
+        .welcome-resume {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            align-items: center;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 0 26px;
+        }
+        .welcome-resume:empty { display: none; margin: 0; }
+        .btn-resume, .btn-view-saved {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 100px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all .2s ease;
+        }
+        .btn-resume {
+            background: rgba(255,90,31,.15);
+            color: #FF8A5F;
+            border: 1px solid rgba(255,90,31,.42);
+        }
+        .btn-resume:hover { background: rgba(255,90,31,.24); }
+        .btn-view-saved {
+            background: rgba(255,255,255,.06);
+            color: rgba(240,235,255,.82);
+            border: 1px solid rgba(255,255,255,.16);
+        }
+        .btn-view-saved:hover { background: rgba(255,255,255,.12); }
+
+        /* ─── Results action row ─── */
+        .results-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Print-only elements hidden on screen */
+        .print-only { display: none; }
+
+        /* ══════════════════════════════
+           PRINT  /  SAVE-AS-PDF
+        ══════════════════════════════ */
+        @media print {
+            @page { margin: 16mm 15mm; }
+
+            html, body { background: #ffffff !important; color: #1a1a1a !important; }
+            body::before, body::after { display: none !important; }
+
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+
+            /* Show only the results screen */
+            .screen { display: none !important; }
+            #screen-results {
+                display: block !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .container { display: block !important; max-width: none; padding: 0; min-height: 0; }
+            .fu { opacity: 1 !important; animation: none !important; transform: none !important; }
+
+            /* Print header */
+            .print-head {
+                text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #C0200F;
+            }
+            .print-brand {
+                display: block;
+                font-family: 'Righteous', cursive;
+                font-size: 30px;
+                color: #C0200F;
+            }
+            .print-sub { font-size: 12px; color: #555; letter-spacing: .05em; }
+
+            .results-kicker { color: #C0200F !important; }
+            .results-title {
+                background: none !important;
+                -webkit-text-fill-color: #1a1a1a !important;
+                color: #1a1a1a !important;
+            }
+            .divider { background: #C0200F !important; }
+
+            .statement-card {
+                background: #faf6f4 !important;
+                border: 1px solid #e3ccc6 !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+            .statement-card::before { display: none !important; }
+            .statement-label { color: #C0200F !important; opacity: 1 !important; }
+            .statement-text { color: #222 !important; }
+
+            /* The Venn uses light text on dark — invisible on white, so omit it */
+            .results-venn-wrap { display: none !important; }
+
+            .pillar-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+            .pillar-card {
+                background: #fafafa !important;
+                border: 1px solid #dddddd !important;
+                break-inside: avoid;
+            }
+            .pc-text { color: #333 !important; }
+            .pillar-card.love   .pc-title { color: #C0200F !important; }
+            .pillar-card.skills .pc-title { color: #B03A00 !important; }
+            .pillar-card.world  .pc-title { color: #C05A00 !important; }
+            .pillar-card.paid   .pc-title { color: #9A6A00 !important; }
+
+            .layer-cards { display: flex !important; }
+            .layer-card {
+                background: #fafafa !important;
+                border: 1px solid #dddddd !important;
+                break-inside: avoid;
+            }
+            .layer-text { color: #333 !important; }
+
+            .closing-card {
+                background: #faf6f4 !important;
+                border: 1px solid #e3ccc6 !important;
+                break-inside: avoid;
+            }
+            .closing-text { color: #333 !important; }
+
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
     </style>
 </head>
 <body>
@@ -717,6 +851,8 @@
         <span class="pill pill-world">💚 World's Needs</span>
         <span class="pill pill-paid">💙 Your Earning Power</span>
     </div>
+
+    <div class="welcome-resume" id="welcome-resume"></div>
 
     <button class="btn-primary" onclick="startJourney()">
         Discover Your Ikigai
@@ -810,6 +946,11 @@
 ════════════════════════════════ -->
 <div id="screen-results" class="screen">
 
+    <div class="print-head print-only">
+        <span class="print-brand">FateBlaze</span>
+        <span class="print-sub">Your Life Purpose &nbsp;·&nbsp; <span id="print-date"></span></span>
+    </div>
+
     <div class="fu">
         <p class="results-kicker">✦ Your Discovery ✦</p>
         <h2 class="results-title">Your FateBlaze</h2>
@@ -831,12 +972,20 @@
         <p class="closing-text" id="r-closing"></p>
     </div>
 
-    <button class="btn-ghost fu" onclick="restart()">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-            <path d="M2 8a6 6 0 1 0 6-6 6 6 0 0 0-4.24 1.76L2 2v4h4L4.76 4.76A4 4 0 1 1 4 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Start Over
-    </button>
+    <div class="results-actions fu no-print">
+        <button class="btn-ghost" onclick="downloadPDF()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2v8m0 0L5 7m3 3l3-3M3 12v1.5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Download PDF
+        </button>
+        <button class="btn-ghost" onclick="restart()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M2 8a6 6 0 1 0 6-6 6 6 0 0 0-4.24 1.76L2 2v4h4L4.76 4.76A4 4 0 1 1 4 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Start Over
+        </button>
+    </div>
 
 </div>
 </div><!-- /container -->
@@ -974,6 +1123,70 @@ let idx = 0;
 let ans = Array(QS_STANDARD.length).fill('');
 
 /* ═══════════════════════════════════════
+   PERSISTENCE  (localStorage)
+   PKEY = in-progress session, RKEY = last completed result
+═══════════════════════════════════════ */
+const PKEY = 'fateblaze.progress.v1';
+const RKEY = 'fateblaze.result.v1';
+
+function saveProgress() {
+    try {
+        const ta = document.getElementById('answer-ta');
+        if (ta && QS[idx]) ans[idx] = ta.value.trim();
+        localStorage.setItem(PKEY, JSON.stringify({
+            mode: currentMode, idx, ans, ts: Date.now()
+        }));
+    } catch (e) { /* storage unavailable — fail silently */ }
+}
+function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(PKEY)); } catch (e) { return null; }
+}
+function clearProgress() {
+    try { localStorage.removeItem(PKEY); } catch (e) {}
+}
+function saveResult(obj) {
+    try { localStorage.setItem(RKEY, JSON.stringify(obj)); } catch (e) {}
+}
+function loadResult() {
+    try { return JSON.parse(localStorage.getItem(RKEY)); } catch (e) { return null; }
+}
+
+/* Populate the Resume / View-saved buttons on the welcome screen */
+function refreshWelcomeActions() {
+    const box = document.getElementById('welcome-resume');
+    if (!box) return;
+    let html = '';
+    const prog = loadProgress();
+    const res  = loadResult();
+    if (prog && prog.ans && prog.idx > 0) {
+        html += `<button class="btn-resume" onclick="resumeJourney()">↻ Resume — Question ${prog.idx + 1} of ${prog.ans.length}</button>`;
+    }
+    if (res) {
+        let when = '';
+        try { when = ' · ' + new Date(res.ts).toLocaleDateString(); } catch (e) {}
+        html += `<button class="btn-view-saved" onclick="viewSavedResult()">✦ View your saved result${when}</button>`;
+    }
+    box.innerHTML = html;
+}
+
+function resumeJourney() {
+    const p = loadProgress();
+    if (!p || !p.ans) { startJourney(); return; }
+    currentMode = p.mode || 'standard';
+    QS  = currentMode === 'fateblaze' ? QS_FATEBLAZE : QS_STANDARD;
+    ans = p.ans.slice();
+    idx = Math.min(p.idx || 0, QS.length - 1);
+    showScreen('question');
+    setTimeout(() => loadQ(idx), 520);
+}
+
+function viewSavedResult() {
+    const r = loadResult();
+    if (!r) return;
+    showSavedResult(r);
+}
+
+/* ═══════════════════════════════════════
    SCREEN MANAGEMENT
 ═══════════════════════════════════════ */
 function showScreen(id, delay = 0) {
@@ -1091,9 +1304,11 @@ function loadQ(i, dir = 1) {
     });
 
     setTimeout(() => ta.focus(), 120);
+
+    saveProgress();   // persist position each time a question loads
 }
 
-function onTA(ta) { updateCC(ta); }
+function onTA(ta) { updateCC(ta); saveProgress(); }
 function updateCC(ta) {
     const n = ta.value.length;
     document.getElementById('char-count').textContent =
@@ -1286,18 +1501,39 @@ function analyzeAndShow() {
             ],
         };
 
-        // Hide layers for standard mode
-        const layersEl = document.getElementById('r-layers');
-        layersEl.style.display = 'none';
-        layersEl.innerHTML = '';
+        const layers = currentMode === 'fateblaze'
+            ? generate7Layers(lW, sW, wW, pW, lA, sA, wA, pA)
+            : null;
 
-        if (currentMode === 'fateblaze') {
-            renderFateBlazeResults(data, lW, sW, wW, pW, lA, sA, wA, pA);
-        } else {
-            renderResults(data);
-        }
+        paintResults(data, layers);
+
+        // Persist the completed result so it survives closing the app
+        saveResult({ mode: currentMode, data, layers, ts: Date.now() });
+        clearProgress();
+
         showScreen('results');
     }, 2900);
+}
+
+/* Render a result from either a fresh analysis or a saved object */
+function paintResults(data, layers) {
+    renderResults(data);
+    const layersEl = document.getElementById('r-layers');
+    if (layers && layers.length) {
+        paintLayers(layers);
+    } else if (layersEl) {
+        layersEl.style.display = 'none';
+        layersEl.innerHTML = '';
+    }
+}
+
+/* Re-display a previously saved result (from localStorage) */
+function showSavedResult(r) {
+    if (!r || !r.data) return;
+    currentMode = r.mode || 'standard';
+    QS = currentMode === 'fateblaze' ? QS_FATEBLAZE : QS_STANDARD;
+    paintResults(r.data, r.layers || null);
+    showScreen('results');
 }
 
 /* ═══════════════════════════════════════
@@ -1362,17 +1598,9 @@ function generate7Layers(lW, sW, wW, pW, lA, sA, wA, pA) {
     ];
 }
 
-function renderFateBlazeResults(data, lW, sW, wW, pW, lA, sA, wA, pA) {
-    // Standard results sections (statement + venn + pillar grid)
-    renderResults(data);
-
-    // Override title for FateBlaze mode
-    const titleEl = document.querySelector('#screen-results .results-title');
-    if (titleEl) titleEl.textContent = 'Your FateBlaze';
-
-    // Build 7-layer cards
-    const layers = generate7Layers(lW, sW, wW, pW, lA, sA, wA, pA);
+function paintLayers(layers) {
     const layersEl = document.getElementById('r-layers');
+    if (!layersEl) return;
     layersEl.style.display = 'flex';
     layersEl.innerHTML = `
         <div style="width:100%;text-align:center;margin:8px 0 20px;">
@@ -1543,7 +1771,23 @@ function restart() {
     ans = Array(QS.length).fill('');
     const layersEl = document.getElementById('r-layers');
     if (layersEl) { layersEl.style.display = 'none'; layersEl.innerHTML = ''; }
+    clearProgress();              // discard the in-progress session
+    refreshWelcomeActions();      // saved result (if any) stays viewable
     showScreen('welcome');
+}
+
+/* ═══════════════════════════════════════
+   DOWNLOAD AS PDF  (browser print → Save as PDF)
+═══════════════════════════════════════ */
+function downloadPDF() {
+    const d = document.getElementById('print-date');
+    if (d) {
+        try {
+            d.textContent = new Date().toLocaleDateString(undefined,
+                { year: 'numeric', month: 'long', day: 'numeric' });
+        } catch (e) { d.textContent = new Date().toDateString(); }
+    }
+    window.print();
 }
 
 /* ═══════════════════════════════════════
@@ -1553,6 +1797,7 @@ document.getElementById('welcome-venn').innerHTML = buildWelcomeVenn();
 
 // Show welcome on load
 (function boot() {
+    refreshWelcomeActions();   // surface Resume / View-saved buttons if data exists
     const w = document.getElementById('screen-welcome');
     w.classList.add('active');
     requestAnimationFrame(() => requestAnimationFrame(() => w.classList.add('visible')));
