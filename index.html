@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FateBlaze — Discover Your Life Purpose</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Righteous&family=Outfit:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --love:        #C0200F;
+            --love-dark:   #8B1200;
+            --love-glow:   rgba(192, 32, 15, 0.35);
+            --skills:      #FF5A1F;
+            --skills-dark: #B03A00;
+            --skills-glow: rgba(255, 90, 31, 0.35);
+            --world:       #F97316;
+            --world-dark:  #C05A00;
+            --world-glow:  rgba(249, 115, 22, 0.35);
+            --paid:        #FFAB40;
+            --paid-dark:   #CC7A00;
+            --paid-glow:   rgba(255, 171, 64, 0.35);
+            --accent:      #C0200F;
+            --accent-dark: #8B1200;
+            --accent-glow: rgba(192, 32, 15, 0.35);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: #1A0500;
+            color: #FFF5F0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ─── Starfield ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                radial-gradient(1.5px 1.5px at  8% 12%, rgba(255,255,255,.25) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 22%  4%, rgba(255,255,255,.18) 0%, transparent 100%),
+                radial-gradient(2px   2px   at 45% 18%, rgba(255,255,255,.14) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 67%  7%, rgba(255,255,255,.20) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 83% 22%, rgba(255,255,255,.16) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 93%  9%, rgba(255,255,255,.12) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 13% 35%, rgba(255,255,255,.13) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 54% 42%, rgba(255,255,255,.10) 0%, transparent 100%),
+                radial-gradient(2px   2px   at 78% 38%, rgba(255,255,255,.15) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 35% 55%, rgba(255,255,255,.12) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 89% 52%, rgba(255,255,255,.18) 0%, transparent 100%),
+                radial-gradient(1px   1px   at  6% 68%, rgba(255,255,255,.14) 0%, transparent 100%),
+                radial-gradient(2px   2px   at 30% 72%, rgba(255,255,255,.11) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 62% 78%, rgba(255,255,255,.16) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 48% 88%, rgba(255,255,255,.13) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 74% 91%, rgba(255,255,255,.10) 0%, transparent 100%),
+                radial-gradient(1px   1px   at 19% 96%, rgba(255,255,255,.15) 0%, transparent 100%),
+                radial-gradient(2px   2px   at 96% 82%, rgba(255,255,255,.12) 0%, transparent 100%);
+        }
+
+        /* Ambient glow orbs */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 20%, rgba(255,90,31,.22) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 35% at 80% 15%, rgba(192,32,15,.16) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 50% at 70% 80%, rgba(249,115,22,.12) 0%, transparent 70%),
+                radial-gradient(ellipse 55% 40% at 10% 75%, rgba(255,171,64,.09) 0%, transparent 70%);
+        }
+
+        /* ─── Layout ─── */
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── Screens ─── */
+        .screen {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .65s cubic-bezier(.4,0,.2,1), transform .65s cubic-bezier(.4,0,.2,1);
+        }
+        .screen.active  { display: flex; }
+        .screen.visible { opacity: 1; transform: translateY(0); }
+
+        /* ══════════════════════════════
+           WELCOME SCREEN
+        ══════════════════════════════ */
+        .welcome-kicker {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--love);
+            opacity: .85;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .welcome-title {
+            font-family: 'Righteous', cursive;
+            font-size: clamp(52px, 12vw, 82px);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: .02em;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        .title-fate {
+            color: #ffffff;
+        }
+        .title-blaze {
+            background: linear-gradient(135deg, #C0200F 0%, #FF5A1F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .welcome-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(16px, 3.5vw, 20px);
+            color: rgba(255,245,240,.55);
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .venn-wrap {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 28px;
+        }
+
+        .welcome-desc {
+            text-align: center;
+            max-width: 520px;
+            font-size: 16px;
+            line-height: 1.85;
+            color: rgba(240,235,255,.68);
+            margin-bottom: 28px;
+        }
+
+        .pillar-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 36px;
+        }
+        .pill {
+            padding: 6px 15px;
+            border-radius: 100px;
+            font-size: 12.5px;
+            font-weight: 500;
+            border: 1px solid;
+            transition: transform .2s ease;
+        }
+        .pill:hover { transform: translateY(-1px); }
+        .pill-love   { color: #C0200F; border-color: rgba(192,32,15,.4);  background: rgba(192,32,15,.1);  }
+        .pill-skills { color: #FF5A1F; border-color: rgba(255,90,31,.4);   background: rgba(255,90,31,.1);   }
+        .pill-world  { color: #F97316; border-color: rgba(249,115,22,.4);   background: rgba(249,115,22,.1);   }
+        .pill-paid   { color: #FFAB40; border-color: rgba(255,171,64,.4);  background: rgba(255,171,64,.1);  }
+
+        .meta-text {
+            margin-top: 18px;
+            font-size: 12.5px;
+            color: rgba(240,235,255,.35);
+            letter-spacing: .03em;
+        }
+
+        /* ─── Buttons ─── */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 42px;
+            background: linear-gradient(135deg, #9B7FD4, #7B5DB8);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            letter-spacing: .02em;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 6px 36px rgba(123,93,184,.45);
+        }
+        .btn-primary:hover  { transform: translateY(-3px); box-shadow: 0 10px 44px rgba(123,93,184,.65); }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 26px;
+            background: rgba(255,255,255,.08);
+            color: rgba(240,235,255,.8);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,.14);
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all .2s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,.13); border-color: rgba(255,255,255,.22); }
+
+        .btn-fateblaze {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 48px;
+            background: linear-gradient(135deg, #8B1200, #C0200F 40%, #FF5A1F);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 8px 44px rgba(192,32,15,.6);
+        }
+        .btn-fateblaze:hover  { transform: translateY(-3px); box-shadow: 0 14px 54px rgba(192,32,15,.75); }
+        .btn-fateblaze:active { transform: translateY(0); }
+
+        .btn-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 320px;
+            margin: 18px 0 4px;
+        }
+        .btn-divider::before, .btn-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,.12);
+        }
+        .btn-divider span {
+            font-size: 11px;
+            color: rgba(255,245,240,.35);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        /* ─── 7-Layer Cards ─── */
+        .layer-cards { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+        .layer-card {
+            width: 100%;
+            background: rgba(255,255,255,.055);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 20px;
+            padding: 20px 26px 18px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .layer-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+        .layer-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .18em;
+            opacity: .45;
+            flex-shrink: 0;
+        }
+        .layer-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: .03em;
+        }
+        .layer-text {
+            font-size: 14px;
+            line-height: 1.82;
+            color: rgba(255,245,240,.75);
+        }
+
+        /* ══════════════════════════════
+           QUESTION SCREEN
+        ══════════════════════════════ */
+        .q-header { width: 100%; margin-bottom: 28px; }
+
+        /* Progress */
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+        .p-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: rgba(240,235,255,.28);
+            transition: color .4s ease, opacity .4s ease;
+        }
+        .p-label.on { opacity: 1; }
+        .p-label.done { opacity: .55; }
+
+        .progress-track {
+            height: 3px;
+            background: rgba(255,255,255,.1);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 100px;
+            width: 0%;
+            transition: width .55s cubic-bezier(.4,0,.2,1), background .5s ease;
+        }
+
+        /* Pillar chip */
+        .pillar-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .chip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: background .4s ease, box-shadow .4s ease;
+        }
+        .chip-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            transition: color .4s ease;
+        }
+        .chip-count {
+            margin-left: 6px;
+            font-size: 11.5px;
+            color: rgba(240,235,255,.38);
+        }
+
+        /* Question card */
+        .q-card {
+            width: 100%;
+            background: rgba(255,255,255,.065);
+            border: 1px solid rgba(255,255,255,.11);
+            border-radius: 26px;
+            padding: 38px 40px 32px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            margin-bottom: 18px;
+            transition: opacity .28s ease, transform .28s ease;
+        }
+        .q-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(19px, 3.8vw, 25px);
+            font-weight: 600;
+            line-height: 1.55;
+            color: #f0ebff;
+            margin-bottom: 26px;
+        }
+        .q-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .char-count { font-size: 11.5px; color: rgba(240,235,255,.32); }
+        .skip-btn {
+            font-size: 12px;
+            color: rgba(240,235,255,.38);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            text-decoration: underline;
+            text-decoration-color: rgba(240,235,255,.2);
+            padding: 0;
+            transition: color .2s ease;
+        }
+        .skip-btn:hover { color: rgba(240,235,255,.65); }
+
+        .answer-ta {
+            width: 100%;
+            min-height: 118px;
+            background: rgba(255,255,255,.055);
+            border: 1px solid rgba(255,255,255,.14);
+            border-radius: 16px;
+            padding: 15px 18px;
+            color: #f0ebff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            line-height: 1.72;
+            resize: vertical;
+            outline: none;
+            transition: border-color .3s ease, box-shadow .3s ease;
+        }
+        .answer-ta::placeholder { color: rgba(240,235,255,.28); }
+        .answer-ta:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .q-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+        .btn-back {
+            flex-shrink: 0;
+            padding: 13px 20px;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.11);
+            border-radius: 100px;
+            color: rgba(240,235,255,.65);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .btn-back:hover { background: rgba(255,255,255,.12); }
+        .btn-next {
+            flex: 1;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 100px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease, background .4s ease;
+        }
+        .btn-next:hover { transform: translateY(-2px); }
+        .btn-next:active { transform: translateY(0); }
+
+        /* ══════════════════════════════
+           ANALYZING SCREEN
+        ══════════════════════════════ */
+        .analyzing-wrap { text-align: center; max-width: 400px; }
+
+        .orb-ring-wrap {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 36px;
+            position: relative;
+        }
+        .orb-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+        }
+        .orb-ring-1 { border-top-color: var(--love);   animation: spin 2.6s linear infinite; }
+        .orb-ring-2 { inset: 14px; border-right-color: var(--skills); animation: spin 3.6s linear infinite reverse; }
+        .orb-ring-3 { inset: 28px; border-bottom-color: var(--world); animation: spin 2.1s linear infinite; }
+        .orb-ring-4 { inset: 42px; border-left-color: var(--paid);  animation: spin 4.2s linear infinite reverse; }
+        .orb-core   {
+            position: absolute;
+            inset: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(192,132,252,.5), rgba(251,191,36,.3), rgba(52,211,153,.2));
+            animation: pulse-core 2.4s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse-core {
+            0%,100% { transform: scale(1);   opacity: .75; }
+            50%      { transform: scale(1.3); opacity: 1;   }
+        }
+
+        .an-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #c084fc, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .an-sub {
+            font-size: 16px;
+            line-height: 1.65;
+            color: rgba(240,235,255,.6);
+        }
+        .dots {
+            display: inline-flex;
+            gap: 7px;
+            margin-top: 26px;
+        }
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(240,235,255,.4);
+            animation: dot-blink 1.6s ease-in-out infinite;
+        }
+        .dot:nth-child(2) { animation-delay: .32s; }
+        .dot:nth-child(3) { animation-delay: .64s; }
+        @keyframes dot-blink {
+            0%,100% { opacity: .28; transform: scale(.8);  }
+            50%      { opacity: 1;   transform: scale(1.2); }
+        }
+
+        /* ══════════════════════════════
+           RESULTS SCREEN
+        ══════════════════════════════ */
+        .results-kicker {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--love);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .results-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 8vw, 54px);
+            font-weight: 700;
+            line-height: 1.15;
+            text-align: center;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #c084fc 0%, #fbbf24 55%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Ikigai statement */
+        .statement-card {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, rgba(192,132,252,.14), rgba(251,191,36,.09), rgba(52,211,153,.07));
+            border: 1px solid rgba(192,132,252,.32);
+            border-radius: 26px;
+            padding: 38px 40px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .statement-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(192,132,252,.12), transparent 70%);
+            pointer-events: none;
+        }
+        .statement-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .24em;
+            text-transform: uppercase;
+            color: var(--love);
+            opacity: .85;
+            margin-bottom: 16px;
+        }
+        .statement-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(17px, 3.2vw, 21px);
+            line-height: 1.75;
+            color: #f0ebff;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Results Venn */
+        .results-venn-wrap {
+            width: 100%;
+            max-width: 390px;
+            margin: 0 auto 30px;
+        }
+
+        /* Pillar cards grid */
+        .pillar-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        @media (max-width: 480px) { .pillar-grid { grid-template-columns: 1fr; } }
+
+        .pillar-card {
+            background: rgba(255,255,255,.055);
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 22px;
+            padding: 26px;
+            transition: transform .25s ease;
+        }
+        .pillar-card:hover { transform: translateY(-3px); }
+        .pillar-card.love   { border-color: rgba(192,132,252,.28); }
+        .pillar-card.skills { border-color: rgba(251,191,36,.28);  }
+        .pillar-card.world  { border-color: rgba(52,211,153,.28);  }
+        .pillar-card.paid   { border-color: rgba(96,165,250,.28);  }
+
+        .pc-icon  { font-size: 22px; margin-bottom: 11px; }
+        .pc-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-bottom: 9px;
+        }
+        .pillar-card.love   .pc-title { color: var(--love);   }
+        .pillar-card.skills .pc-title { color: var(--skills); }
+        .pillar-card.world  .pc-title { color: var(--world);  }
+        .pillar-card.paid   .pc-title { color: var(--paid);   }
+        .pc-text {
+            font-size: 13.5px;
+            line-height: 1.68;
+            color: rgba(240,235,255,.75);
+        }
+
+        /* Closing message */
+        .closing-card {
+            width: 100%;
+            background: rgba(255,255,255,.045);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 22px;
+            padding: 32px 36px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .closing-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(15px, 2.8vw, 18px);
+            line-height: 1.8;
+            color: rgba(240,235,255,.7);
+        }
+
+        /* Fade-up stagger for results */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+        .fu { opacity: 0; animation: fadeUp .65s ease forwards; }
+        .fu:nth-child(1) { animation-delay: .05s; }
+        .fu:nth-child(2) { animation-delay: .20s; }
+        .fu:nth-child(3) { animation-delay: .38s; }
+        .fu:nth-child(4) { animation-delay: .56s; }
+        .fu:nth-child(5) { animation-delay: .74s; }
+        .fu:nth-child(6) { animation-delay: .92s; }
+        .fu:nth-child(7) { animation-delay: 1.10s; }
+
+        /* Divider */
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(192,132,252,.5), transparent);
+            margin: 0 auto 28px;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 480px) {
+            .q-card             { padding: 28px 22px 24px; }
+            .statement-card     { padding: 28px 22px; }
+            .closing-card       { padding: 26px 22px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<!-- ════════════════════════════════
+     WELCOME SCREEN
+════════════════════════════════ -->
+<div id="screen-welcome" class="screen">
+
+    <div class="welcome-kicker">derived from the Japanese Philosophy of Purpose</div>
+    <h1 class="welcome-title"><span class="title-fate">Fate</span><span class="title-blaze">Blaze</span></h1>
+    <p class="welcome-subtitle">生き甲斐 · your reason for being</p>
+
+    <div class="venn-wrap" id="welcome-venn"></div>
+
+    <p class="welcome-desc">
+        Deep within you lies the intersection of four forces&nbsp;—
+        what you <strong style="color:var(--love)">love</strong>,
+        what you're <strong style="color:var(--skills)">gifted&nbsp;at</strong>,
+        what the <strong style="color:var(--world)">world&nbsp;needs</strong>,
+        and what&nbsp;<strong style="color:#FFAB40">makes&nbsp;you&nbsp;money</strong>.
+        This journey of reflective questions will help you find where they meet.
+    </p>
+
+    <div class="pillar-pills">
+        <span class="pill pill-love">💜 What You Love</span>
+        <span class="pill pill-skills">💛 Your Strengths</span>
+        <span class="pill pill-world">💚 World's Needs</span>
+        <span class="pill pill-paid">💙 Your Earning Power</span>
+    </div>
+
+    <button class="btn-primary" onclick="startJourney()">
+        Discover Your Ikigai
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <div class="btn-divider"><span>or</span></div>
+
+    <button class="btn-fateblaze" onclick="startFateBlazeJourney()">
+        <span style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+            <span>Begin the FateBlaze Journey</span>
+            <span style="font-size:11px;font-weight:400;letter-spacing:.12em;opacity:.75;">(ikigai + more)</span>
+        </span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2l1.5 3.5L13 7l-2.5 2.5.6 3.5L8 11.5 4.9 13l.6-3.5L3 7l3.5-1.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <p class="meta-text">~10 minutes · fully private</p>
+</div>
+
+<!-- ════════════════════════════════
+     QUESTION SCREEN
+════════════════════════════════ -->
+<div id="screen-question" class="screen">
+
+    <div class="q-header">
+        <div class="progress-labels">
+            <span class="p-label" id="pl-love">Passion</span>
+            <span class="p-label" id="pl-skills">Talent</span>
+            <span class="p-label" id="pl-world">Impact</span>
+            <span class="p-label" id="pl-paid">Wealth</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="prog-fill"></div>
+        </div>
+        <div class="pillar-chip">
+            <div class="chip-dot" id="chip-dot"></div>
+            <span class="chip-label" id="chip-label"></span>
+            <span class="chip-count" id="chip-count"></span>
+        </div>
+    </div>
+
+    <div class="q-card" id="q-card">
+        <p class="q-text" id="q-text"></p>
+        <div class="q-meta">
+            <span class="char-count" id="char-count">0 characters</span>
+            <button class="skip-btn" onclick="skipQuestion()">Skip →</button>
+        </div>
+        <textarea
+            class="answer-ta"
+            id="answer-ta"
+            placeholder="Take your time and reflect honestly…"
+            oninput="onTA(this)"
+        ></textarea>
+    </div>
+
+    <div class="q-nav">
+        <button class="btn-back" id="btn-back" onclick="prevQ()">← Back</button>
+        <button class="btn-next" id="btn-next" onclick="nextQ()">Continue →</button>
+    </div>
+
+</div>
+
+<!-- ════════════════════════════════
+     ANALYZING SCREEN
+════════════════════════════════ -->
+<div id="screen-analyzing" class="screen">
+    <div class="analyzing-wrap">
+        <div class="orb-ring-wrap">
+            <div class="orb-ring orb-ring-1"></div>
+            <div class="orb-ring orb-ring-2"></div>
+            <div class="orb-ring orb-ring-3"></div>
+            <div class="orb-ring orb-ring-4"></div>
+            <div class="orb-core"></div>
+        </div>
+        <h2 class="an-title">Reflecting on your answers</h2>
+        <p class="an-sub">Searching for the threads that weave your unique purpose together…</p>
+        <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════════════════════
+     RESULTS SCREEN
+════════════════════════════════ -->
+<div id="screen-results" class="screen">
+
+    <div class="fu">
+        <p class="results-kicker">✦ Your Discovery ✦</p>
+        <h2 class="results-title">Your FateBlaze</h2>
+        <div class="divider"></div>
+    </div>
+
+    <div class="statement-card fu">
+        <p class="statement-label">✦ &nbsp; Your Life Purpose &nbsp; ✦</p>
+        <p class="statement-text" id="r-statement"></p>
+    </div>
+
+    <div class="results-venn-wrap fu" id="r-venn"></div>
+
+    <div class="pillar-grid fu" id="r-grid"></div>
+
+    <div class="layer-cards fu" id="r-layers" style="display:none;"></div>
+
+    <div class="closing-card fu">
+        <p class="closing-text" id="r-closing"></p>
+    </div>
+
+    <button class="btn-ghost fu" onclick="restart()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <path d="M2 8a6 6 0 1 0 6-6 6 6 0 0 0-4.24 1.76L2 2v4h4L4.76 4.76A4 4 0 1 1 4 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Start Over
+    </button>
+
+</div>
+</div><!-- /container -->
+
+<script>
+/* ═══════════════════════════════════════
+   QUESTIONS DATA
+═══════════════════════════════════════ */
+const PILLARS = {
+    love:   { label:'Passion', color:'#C0200F', dark:'#8B1200', glow:'rgba(192,32,15,.35)', grad:'linear-gradient(135deg,#8B1200,#C0200F)', icon:'🔥' },
+    skills: { label:'Talent',  color:'#FF5A1F', dark:'#B03A00', glow:'rgba(255,90,31,.35)',  grad:'linear-gradient(135deg,#B03A00,#FF5A1F)', icon:'⚡' },
+    world:  { label:'Impact',  color:'#F97316', dark:'#C05A00', glow:'rgba(249,115,22,.35)',  grad:'linear-gradient(135deg,#C05A00,#F97316)', icon:'🌍' },
+    paid:   { label:'Wealth',  color:'#FFAB40', dark:'#CC7A00', glow:'rgba(255,171,64,.35)', grad:'linear-gradient(135deg,#CC7A00,#FFAB40)', icon:'💰' },
+};
+
+const QS_STANDARD = [
+    // ── LOVE ──────────────────────────────────────────────
+    { p:'love',
+      q:'When you lose track of time, what are you usually doing?',
+      ph:'Think about moments when hours felt like minutes…' },
+    { p:'love',
+      q:'If you had total freedom — no obligations, no bills — how would you honestly spend your days?',
+      ph:'Paint a picture of an ideal day, from morning to night…' },
+    { p:'love',
+      q:'What activities or topics make you feel most alive and fully yourself?',
+      ph:'These could be creative, intellectual, physical, relational…' },
+    { p:'love',
+      q:'What would you pursue even if no one ever knew — no recognition, no reward?',
+      ph:'The things done purely for the love of doing them…' },
+    // ── SKILLS ────────────────────────────────────────────
+    { p:'skills',
+      q:'What abilities or skills have always come naturally to you — things others seem to struggle with?',
+      ph:'Consider what feels effortless to you but difficult for others…' },
+    { p:'skills',
+      q:'What do friends, family, or colleagues most often ask for your help with?',
+      ph:'What problems do people bring to you? What do they trust you to handle?' },
+    { p:'skills',
+      q:'Looking back at your proudest moments, what strengths made them possible?',
+      ph:'Think about achievements you\'re genuinely proud of — what did they require of you?' },
+    { p:'skills',
+      q:'What topics or crafts could you teach, write about, or speak about for hours?',
+      ph:'What knowledge lives so deeply in you, you could share it endlessly?' },
+    // ── WORLD ─────────────────────────────────────────────
+    { p:'world',
+      q:'What problems in the world stir something in you — frustration, heartbreak, or a fierce desire to fix?',
+      ph:'What injustices, gaps, or struggles do you notice that others seem to walk past?' },
+    { p:'world',
+      q:'Who do you feel most called to serve, help, or uplift?',
+      ph:'A specific group, a community, a cause, a generation, a species…' },
+    { p:'world',
+      q:'What kind of change do you want to leave behind when you\'re gone?',
+      ph:'How do you hope the world — or even one person — is different because you were here?' },
+    { p:'world',
+      q:'What does the world seem to need more of, that you might be uniquely positioned to give?',
+      ph:'Consider your perspective, background, or experiences that are rare or valuable…' },
+    // ── PAID ──────────────────────────────────────────────
+    { p:'paid',
+      q:'What value do you create — or could you create — that others would willingly pay for?',
+      ph:'Think about skills, results, or transformations you could deliver to others…' },
+    { p:'paid',
+      q:'What work paths, businesses, or careers have genuinely excited you, even if you\'ve never pursued them?',
+      ph:'Don\'t filter for "realistic" — include ideas that felt possible before doubt crept in…' },
+    { p:'paid',
+      q:'What would you happily do as your life\'s work, even if the financial rewards were modest?',
+      ph:'The intersection of what makes you money and what feels deeply meaningful…' },
+    { p:'paid',
+      q:'If you could be paid exceptionally well for one specific thing you already do or know, what would it be?',
+      ph:'Think about the skills, knowledge, or results you deliver that others genuinely struggle to replicate…' },
+];
+
+/* ── FateBlaze Journey: 10 philosophical frameworks embedded ──────────── */
+const QS_FATEBLAZE = [
+    // ── LOVE — Flow Theory (Csikszentmihalyi) + Daimon (Hillman) ──────────
+    { p:'love',
+      q:'Describe the last time you were so absorbed in something that the outside world disappeared. What were you doing — and what specifically made it feel effortless?',
+      ph:'Flow happens when challenge meets skill at exactly the right level. What were you creating, building, or exploring?' },
+    { p:'love',
+      q:'James Hillman believed every person carries a "Daimon" — an inner guiding force that has been pulling you toward your destiny since childhood. What has your Daimon always been trying to get you to do, even when you resisted?',
+      ph:'Think of recurring urges, childhood dreams that keep resurfacing, or nudges you\'ve ignored because they felt impractical…' },
+    { p:'love',
+      q:'Viktor Frankl wrote that meaning is found — not invented. What are the moments in your life that have felt undeniably meaningful, even if they were painful? What do they reveal about what you truly love?',
+      ph:'Look for patterns across your life\'s peak experiences, deepest struggles, and proudest moments…' },
+    { p:'love',
+      q:'If you stripped away every obligation, expectation, and opinion — and could only do what your soul finds beautiful and worth doing — what would that be?',
+      ph:'This is your deepest love. Don\'t edit for practicality — let it be raw and true…' },
+    // ── SKILLS — Hedgehog Concept (Collins) + The Element (Ken Robinson) ──
+    { p:'skills',
+      q:'Jim Collins identified the Hedgehog Concept: what you can be best in the world at. Not what you want to be — what you genuinely could become world-class at with focus. What is that for you?',
+      ph:'Think about the 1–2 things where your natural talent, deep interest, and years of experience converge into something rare…' },
+    { p:'skills',
+      q:'Ken Robinson wrote that "The Element" is where natural aptitude meets personal passion — where you feel most yourself and most capable. Describe the moments when you\'ve been in your Element. What skills were fully expressed?',
+      ph:'Think about times when you felt both competent and completely alive. What were you doing that felt simultaneously easy and electrifying?' },
+    { p:'skills',
+      q:'Carl Jung taught that our shadow — the parts of ourselves we suppress — often holds our greatest hidden gifts. What abilities or intelligences have you undervalued, dismissed, or been told "aren\'t practical"?',
+      ph:'These might be creative gifts, social talents, or unconventional ways of thinking that others didn\'t reward but that feel deeply natural to you…' },
+    { p:'skills',
+      q:'What do you know deeply that most people don\'t? What knowledge have you accumulated — formally or through lived experience — that represents a rare combination almost no one else has?',
+      ph:'Think about the intersection of your career, hobbies, struggles, and curiosities. Your unique cocktail of knowledge IS your competitive advantage…' },
+    // ── WORLD — MTP (Diamandis) + Dharma + PERMA (Seligman) ───────────────
+    { p:'world',
+      q:'Peter Diamandis challenged entrepreneurs to define a Massive Transformative Purpose — a mission so big it almost feels arrogant. If you were to dedicate your life to transforming one system, community, or human experience, what would it be?',
+      ph:'Go bigger than you\'re comfortable with. What injustice or inefficiency in the world makes you angry enough to spend years solving?' },
+    { p:'world',
+      q:'Dharma — your sacred duty — is the unique role only YOU can play in this world. Given your specific background, wounds, gifts, and perspective, who are you most perfectly positioned to serve? And what do they desperately need that only you can give?',
+      ph:'Your pain points, your unusual background, your specific lived experience — these aren\'t accidents. Who needs exactly what those gave you?' },
+    { p:'world',
+      q:'Martin Seligman\'s PERMA model says flourishing humans contribute to something beyond themselves. When you imagine your life at 85, looking back — what contribution are you most proud of making to the world or to another person\'s life?',
+      ph:'Think beyond career accomplishments. What relationships built, lives touched, or changes created matter most to you at the end of the story?' },
+    { p:'world',
+      q:'What problem keeps you awake at night — not with anxiety, but with the burning desire to solve it? What does the world look like if that problem is solved?',
+      ph:'Describe the world you\'re working toward. What does it feel like for the people who live in it?' },
+    // ── PAID — Golden Circle (Sinek) + Hedgehog Economics ─────────────────
+    { p:'paid',
+      q:'Simon Sinek\'s Golden Circle starts with WHY. Your "Why" is not your product or service — it\'s the belief that drives you. What is your deepest WHY for doing the work you\'re meant to do? Then describe your HOW — your unique method or approach — and finally your WHAT.',
+      ph:'Start from the inside out: Why do I do this? → How do I do it differently? → What specifically do I offer?' },
+    { p:'paid',
+      q:'Collins said the economic engine of a Hedgehog Concept is usually a single metric: profit per X. What is the economic unit of your ideal work? What specific transformation or result could you offer that people would pay a premium for?',
+      ph:'Think about outcomes people desperately want: transformation, status, time saved, pain removed, results achieved. What specific result could you reliably deliver?' },
+    { p:'paid',
+      q:'Imagine your ideal client or customer. They come to you after struggling with a specific problem that you\'re uniquely equipped to solve. Walk through that story: who are they, what have they tried, what does life look like after working with you?',
+      ph:'The more specifically you can paint this picture, the more clearly you can see your real market. Name names. Paint scenes. Make it vivid.' },
+    { p:'paid',
+      q:'If you were to build your ideal business or career as a direct expression of your purpose — one where your deepest gifts, your Ikigai, and your MTP all align — what does that look like in 5 years? What are you doing, who do you serve, and what does the work feel like day to day?',
+      ph:'This is your North Star. Don\'t be realistic yet. Just describe the destination that would make your soul say "yes, that\'s it"…' },
+];
+
+/* ── Mode state ────────────────────────────────────────────────────────── */
+let currentMode = 'standard';
+let QS = QS_STANDARD;
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let idx = 0;
+let ans = Array(QS_STANDARD.length).fill('');
+
+/* ═══════════════════════════════════════
+   SCREEN MANAGEMENT
+═══════════════════════════════════════ */
+function showScreen(id, delay = 0) {
+    const all = document.querySelectorAll('.screen');
+    const next = document.getElementById('screen-' + id);
+
+    all.forEach(s => {
+        if (s === next) return;            // never deactivate the incoming screen
+        s.classList.remove('visible');
+        setTimeout(() => {
+            if (s !== next) s.classList.remove('active');
+        }, 650);
+    });
+
+    setTimeout(() => {
+        next.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        requestAnimationFrame(() => requestAnimationFrame(() => next.classList.add('visible')));
+    }, delay || 420);
+}
+
+/* ═══════════════════════════════════════
+   WELCOME → START
+═══════════════════════════════════════ */
+function startJourney() {
+    currentMode = 'standard';
+    QS = QS_STANDARD;
+    idx = 0;
+    ans = Array(QS.length).fill('');
+    showScreen('question');
+    setTimeout(() => loadQ(0), 520);
+}
+
+function startFateBlazeJourney() {
+    currentMode = 'fateblaze';
+    QS = QS_FATEBLAZE;
+    idx = 0;
+    ans = Array(QS.length).fill('');
+    showScreen('question');
+    setTimeout(() => loadQ(0), 520);
+}
+
+/* ═══════════════════════════════════════
+   QUESTION LOADING
+═══════════════════════════════════════ */
+function loadQ(i, dir = 1) {
+    const q   = QS[i];
+    const cfg = PILLARS[q.p];
+
+    // CSS variable update for textarea focus ring
+    document.documentElement.style.setProperty('--accent',      cfg.color);
+    document.documentElement.style.setProperty('--accent-dark', cfg.dark);
+    document.documentElement.style.setProperty('--accent-glow', cfg.glow);
+
+    // Progress fill
+    const pct = (i / QS.length) * 100;
+    const fill = document.getElementById('prog-fill');
+    fill.style.width      = pct + '%';
+    fill.style.background = cfg.grad;
+
+    // Progress labels
+    const order = ['love','skills','world','paid'];
+    const pillarIdx = order.indexOf(q.p);
+    order.forEach((p, pi) => {
+        const el = document.getElementById('pl-' + p);
+        el.classList.remove('on', 'done');
+        el.style.color = '';
+        if (pi < pillarIdx) {
+            el.classList.add('done');
+            el.style.color = PILLARS[p].color;
+            el.style.opacity = '.45';
+        } else if (pi === pillarIdx) {
+            el.classList.add('on');
+            el.style.color = cfg.color;
+            el.style.opacity = '1';
+        }
+    });
+
+    // Pillar chip
+    const dot = document.getElementById('chip-dot');
+    dot.style.background = cfg.color;
+    dot.style.boxShadow  = '0 0 8px ' + cfg.glow;
+    const chipLabel = document.getElementById('chip-label');
+    chipLabel.textContent = cfg.label;
+    chipLabel.style.color = cfg.color;
+    document.getElementById('chip-count').textContent = `· Question ${i + 1} of ${QS.length}`;
+
+    // Question text + textarea
+    document.getElementById('q-text').textContent    = q.q;
+    const ta = document.getElementById('answer-ta');
+    ta.placeholder = q.ph;
+    ta.value        = ans[i] || '';
+    updateCC(ta);
+
+    // Next button style
+    const btnN = document.getElementById('btn-next');
+    btnN.style.background = cfg.grad;
+    btnN.style.boxShadow  = `0 4px 22px ${cfg.glow}`;
+    btnN.textContent = i === QS.length - 1 ? 'Complete Journey →' : 'Continue →';
+
+    // Back button
+    document.getElementById('btn-back').style.visibility = i === 0 ? 'hidden' : 'visible';
+
+    // Animate card in
+    const card = document.getElementById('q-card');
+    card.style.opacity   = '0';
+    card.style.transform = dir > 0 ? 'translateX(22px)' : 'translateX(-22px)';
+    card.style.transition = 'none';
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            card.style.transition = 'opacity .3s ease, transform .3s ease';
+            card.style.opacity   = '1';
+            card.style.transform = 'translateX(0)';
+        });
+    });
+
+    setTimeout(() => ta.focus(), 120);
+}
+
+function onTA(ta) { updateCC(ta); }
+function updateCC(ta) {
+    const n = ta.value.length;
+    document.getElementById('char-count').textContent =
+        n === 0 ? '0 characters' : n === 1 ? '1 character' : `${n} characters`;
+}
+
+function nextQ() {
+    ans[idx] = (document.getElementById('answer-ta').value || '').trim();
+    if (idx < QS.length - 1) {
+        idx++;
+        loadQ(idx, 1);
+    } else {
+        analyzeAndShow();
+    }
+}
+function prevQ() {
+    ans[idx] = (document.getElementById('answer-ta').value || '').trim();
+    if (idx > 0) { idx--; loadQ(idx, -1); }
+}
+function skipQuestion() {
+    ans[idx] = '';
+    if (idx < QS.length - 1) { idx++; loadQ(idx, 1); }
+    else { analyzeAndShow(); }
+}
+
+/* ═══════════════════════════════════════
+   ANALYSIS ENGINE
+═══════════════════════════════════════ */
+const STOP = new Set([
+    'i','me','my','myself','we','our','ours','you','your','yours','he','him','his',
+    'she','her','hers','it','its','they','them','their','what','which','who','whom',
+    'this','that','these','those','am','is','are','was','were','be','been','being',
+    'have','has','had','having','do','does','did','doing','will','would','could',
+    'should','may','might','must','shall','can','need','a','an','the','and','but',
+    'if','or','because','as','until','while','of','at','by','for','with','about',
+    'against','between','into','through','during','before','after','above','below',
+    'to','from','up','down','in','out','on','off','over','under','again','further',
+    'then','once','here','there','when','where','why','how','all','both','each',
+    'few','more','most','other','some','such','no','nor','not','only','own','same',
+    'so','than','too','very','just','also','much','like','even','well','back',
+    'still','way','take','think','feel','often','always','never','time','make',
+    'want','really','get','know','find','lot','love','good','thing','things',
+    'something','anything','everything','nothing','people','person','someone',
+    'anyone','everyone','world','life','work','day','days','year','years',
+    'dont','cant','wont','isnt','arent','wasnt','werent','havent','hasnt',
+    'hadnt','wouldnt','couldnt','shouldnt','maybe','quite','rather','pretty',
+    'truly','simply','actually','usually','sometimes','always','never','one',
+    'two','three','four','five','many','any','every','doing','going','being',
+    'something','nothing','someone','anyone','whatever','whenever','however',
+    'really','always','never','often','lot','lots','kind','types','sure',
+    'come','goes','think','feel','feels','felt','knew','know','knew','think',
+    'thought','seem','seems','seemed','look','looks','looked','help','helps',
+    'helped','want','wants','wanted','need','needs','needed','like','liked',
+    'likes','enjoy','enjoys','enjoyed','able','able','would','could','without',
+    'around','through','since','while','although','though','despite','instead',
+    'toward','towards','whether','else','whether','else','once','upon',
+    'been','just','even','those','these','them','then','when','what','that',
+    'have','with','from','this','will','your','more','also','into','than',
+    'been','were','there','their','about','which','some','most','other',
+    'after','doing','going','getting','making','taking','trying','using',
+    'able','like','just','very','much','really','quite','such','same',
+    'little','might','shall','also','back','before','between','could',
+    'first','found','into','last','made','most','much','must','over',
+    'said','some','such','than','them','then','they','time','under',
+    'used','were','what','when','with','would','after','again','along',
+    'another','both','came','come','down','each','from','give','have',
+    'here','high','into','just','keep','know','large','long','look','made',
+    'many','mean','might','need','next','only','open','over','part','same',
+    'seem','self','show','side','some','than','then','through','time',
+    'used','view','want','ways','well','went','were','when','where','while',
+    'whole','will','with','your','zero','yourself','just','kind','sort',
+    'type','every','each','both','between','among','within','across',
+    'during','since','until','while','upon','about','above','below',
+    'near','next','plus','plus','like','same','other','else','both',
+    'still','already','yet','soon','now','then','here','there','never',
+    'always','often','sometimes','rarely','usually','finally','simply'
+]);
+
+function getWords(texts) {
+    return texts.join(' ').toLowerCase().split(/[\s,.\!\?\;\:\-\"\'\/\(\)]+/)
+        .filter(w => w.length >= 4 && !STOP.has(w) && /^[a-z]+$/.test(w));
+}
+
+function topWords(texts, n = 10) {
+    const words = getWords(texts);
+    const freq = {};
+    words.forEach(w => {
+        const key = w.endsWith('ing') ? w : (w.endsWith('s') && w.length > 4) ? w.slice(0,-1) : w;
+        freq[key] = (freq[key] || 0) + (w.endsWith('ing') ? 1.4 : 1);
+    });
+    return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);
+}
+
+function pillarAnswers(p) {
+    return QS.map((q,i) => q.p === p ? (ans[i]||'') : null).filter(a => a !== null);
+}
+
+function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+function summaryFor(pillar, words, texts) {
+    const allText = texts.filter(t => t && t.length > 4).join(' ');
+    const act  = words.find(w => w.endsWith('ing') && w.length > 5) || words[0] || 'your passion';
+    const noun = words.find(w => !w.endsWith('ing') && w !== act) || words[1] || 'your unique gifts';
+
+    if (allText.length < 25) {
+        return {
+            love:   'You have deep passions that ignite your inner fire — pursuits that feel natural, energising, and fully expressive of who you are.',
+            skills: 'You possess unique strengths built over time — abilities that come naturally to you and that others recognise and trust.',
+            world:  'You carry a genuine desire to make a meaningful difference and contribute to something larger than yourself.',
+            paid:   'You have knowledge and skills that create real value for others — work the world will recognise and invest in.'
+        }[pillar];
+    }
+
+    const opts = {
+        love: [
+            `You feel most alive when engaged in ${act} — especially anything touching ${noun}. These aren't side interests; they're expressions of your truest self.`,
+            `Time dissolves when you're ${act}, and your energy naturally gravitates toward ${noun}. These threads weave the fabric of your authentic identity.`,
+            `Your heart lights up around ${act} and ${noun}. When you honour these passions, you're not just happy — you're fully, undeniably yourself.`,
+        ],
+        skills: [
+            `You have a genuine gift for ${act} and a deep fluency in ${noun}. Others see your capability even when you take it for granted.`,
+            `Your strengths run deep in ${noun} — abilities that feel almost effortless to you but leave others impressed. Your gift for ${act} is central to who you are.`,
+            `When it comes to ${act} and ${noun}, you operate at a level others struggle to reach. That isn't luck — it's years of being wired this way.`,
+        ],
+        world: [
+            `You see clearly what needs ${act} in the world, particularly around ${noun}. Your role is to be the bridge between what is and what could be.`,
+            `The world deeply needs someone with your capacity for ${act} and your understanding of ${noun}. Your mission is already visible in what moves you most.`,
+            `You're called to address ${noun} through ${act}. The problems that frustrate others fuel you — that's the signature of a true calling.`,
+        ],
+        paid: [
+            `You can create lasting value through ${act}, especially in the arena of ${noun}. People will seek out and pay for exactly what you uniquely offer.`,
+            `Your ability to ${act} within the domain of ${noun} has real market worth. The sweet spot of what you do well and what others need is your professional home.`,
+            `There's a real and sustainable living available to you through ${act} and your expertise in ${noun}. Purpose and livelihood don't have to be separate.`,
+        ],
+    };
+
+    const arr = opts[pillar];
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function ikigaiStatement(lW, sW, wW, pW) {
+    const act  = lW.find(w => w.endsWith('ing')) || lW[0] || 'creating';
+    const skill = sW.find(w => !w.endsWith('ing')) || sW[0] || 'your unique strengths';
+    const world = wW[0] || 'meaningful change';
+
+    const allFilled = ans.filter(a => a && a.length > 8).length;
+    if (allFilled < 4) {
+        return "Your ikigai is the powerful convergence of your deepest passions, your natural strengths, the world's deepest needs, and the value you offer — a purpose waiting to be fully lived.";
+    }
+
+    const opts = [
+        `Your ikigai lives where ${act} meets ${skill} — channelled toward ${world}. When you bring your full self to work that matters, you stop working and start living your purpose.`,
+        `You are here to harness your gift for ${skill} in service of ${world}, doing it with the joy of someone who simply loves ${act}. That intersection is your reason for being.`,
+        `The world needs exactly what you have: a person who finds deep meaning in ${act}, commands real skill in ${skill}, and channels it all toward ${world}. That is your ikigai.`,
+        `Your purpose is to use your strength in ${skill} to bring about ${world} — and the secret is you'll love every moment, because it comes naturally through your love of ${act}.`,
+    ];
+    return opts[Math.floor(Math.random() * opts.length)];
+}
+
+function closingMessage() {
+    const opts = [
+        "Your ikigai isn't a distant destination — it's already in you. Every moment you felt most alive, most useful, most yourself, you were touching it. The path forward is simply to do more of that. Begin today.",
+        "This is a beginning, not a blueprint. Let these insights breathe. Return to them. Notice when your days feel full and when they don't — your ikigai will guide you toward more of the former. You already know the way.",
+        "Purpose isn't found. It's remembered. These answers were always inside you. The question now is: what is one small step you can take today to move closer to the life they point toward?",
+        "FateBlaze isn't a destination — it's a direction. You've just oriented your compass. Start small, stay curious, and trust that living from your centre will draw the right opportunities, people, and work toward you.",
+    ];
+    return opts[Math.floor(Math.random() * opts.length)];
+}
+
+function analyzeAndShow() {
+    showScreen('analyzing');
+
+    setTimeout(() => {
+        const lA = pillarAnswers('love'),
+              sA = pillarAnswers('skills'),
+              wA = pillarAnswers('world'),
+              pA = pillarAnswers('paid');
+
+        const lW = topWords(lA), sW = topWords(sA),
+              wW = topWords(wA), pW = topWords(pA);
+
+        const data = {
+            statement : ikigaiStatement(lW, sW, wW, pW),
+            closing   : closingMessage(),
+            cards: [
+                { key:'love',   icon:'💜', title:'What You Love',        text: summaryFor('love',   lW, lA), words: lW },
+                { key:'skills', icon:'💛', title:'Your Strengths',       text: summaryFor('skills', sW, sA), words: sW },
+                { key:'world',  icon:'💚', title:"World's Needs",        text: summaryFor('world',  wW, wA), words: wW },
+                { key:'paid',   icon:'💙', title:'Your Earning Power',    text: summaryFor('paid',   pW, pA), words: pW },
+            ],
+        };
+
+        // Hide layers for standard mode
+        const layersEl = document.getElementById('r-layers');
+        layersEl.style.display = 'none';
+        layersEl.innerHTML = '';
+
+        if (currentMode === 'fateblaze') {
+            renderFateBlazeResults(data, lW, sW, wW, pW, lA, sA, wA, pA);
+        } else {
+            renderResults(data);
+        }
+        showScreen('results');
+    }, 2900);
+}
+
+/* ═══════════════════════════════════════
+   FATEBLAZE 7-LAYER OUTPUT
+═══════════════════════════════════════ */
+function generate7Layers(lW, sW, wW, pW, lA, sA, wA, pA) {
+    const act    = lW.find(w => w.endsWith('ing')) || lW[0] || 'creating';
+    const skill  = sW.find(w => !w.endsWith('ing')) || sW[0] || 'your craft';
+    const cause  = wW[0] || 'meaningful impact';
+    const market = pW.find(w => !w.endsWith('ing')) || pW[0] || 'your work';
+    const gift   = sW[1] || sW[0] || 'deep expertise';
+    const love   = lW[1] || lW[0] || 'your passion';
+
+    const lText = lA.filter(a=>a&&a.length>10).join(' ');
+    const sText = sA.filter(a=>a&&a.length>10).join(' ');
+    const wText = wA.filter(a=>a&&a.length>10).join(' ');
+    const pText = pA.filter(a=>a&&a.length>10).join(' ');
+
+    return [
+        {
+            num: '01',
+            name: 'Your North Star',
+            color: '#C0200F',
+            text: `Your North Star is the magnetic truth that orients everything else: you exist to use your gift for ${skill} in service of ${cause}, channelled through a deep love of ${act}. This is the direction, not the destination — follow it with consistency and your life will organise itself around meaning.`,
+        },
+        {
+            num: '02',
+            name: 'Your Why  ·  Logotherapy',
+            color: '#D63010',
+            text: `Viktor Frankl taught that suffering without meaning is unbearable, but suffering in service of meaning becomes fuel. Your responses reveal that your deepest Why isn't about achievement — it's about ${cause}. Everything you build, create, or offer should be in direct service of this central truth. When you lose your way, return here.`,
+        },
+        {
+            num: '03',
+            name: 'Your Hedgehog  ·  Collins',
+            color: '#E04010',
+            text: `Jim Collins defined the Hedgehog Concept as the intersection of what you can be best in the world at, what drives your economic engine, and what you are deeply passionate about. Your Hedgehog: becoming world-class at ${skill}, driven by a mission to impact ${cause}, and funded by the unique value you deliver through ${market}. Stop dabbling. Commit to this.`,
+        },
+        {
+            num: '04',
+            name: 'Your Ikigai Synthesis',
+            color: '#FF5A1F',
+            text: `At the centre of your four forces — love of ${act}, talent for ${gift}, the world\'s need for ${cause}, and your economic power through ${market} — lives your Ikigai. This is not a job title. It is a way of operating in the world where what you love, what you\'re built for, what the world needs, and what sustains you financially are no longer in tension.`,
+        },
+        {
+            num: '05',
+            name: 'Your Flow Signature  ·  Csikszentmihalyi',
+            color: '#F97316',
+            text: `Flow occurs when challenge meets skill at the exact right level — and your answers reveal where this happens for you. You enter Flow most reliably when ${act} is involved, especially when it stretches your gift for ${gift} in service of something that matters. Design your work to spend the majority of your time in this state. Everything else is administration.`,
+        },
+        {
+            num: '06',
+            name: 'Your Origin Angle  ·  Jungian Shadow',
+            color: '#FFA020',
+            text: `Carl Jung taught that our greatest gifts often hide in our shadow — the parts of ourselves we\'ve suppressed, dismissed, or been told to minimise. Your responses hint at a ${gift} that may have been undervalued. The skills and ways of being you were told weren\'t "practical" or "realistic" are often the precise things the world most needs from you. Reclaim them.`,
+        },
+        {
+            num: '07',
+            name: 'Your How + What  ·  Golden Circle',
+            color: '#FFAB40',
+            text: `Simon Sinek\'s Golden Circle works inside-out: Why → How → What. You now have your Why. Your How is your unique method — the specific way you approach ${act} and ${skill} that no one else quite replicates. Your What is the tangible offer: helping people achieve ${cause} through your expertise in ${market}. Lead with your Why. Sell through your What. Deliver through your How.`,
+        },
+    ];
+}
+
+function renderFateBlazeResults(data, lW, sW, wW, pW, lA, sA, wA, pA) {
+    // Standard results sections (statement + venn + pillar grid)
+    renderResults(data);
+
+    // Override title for FateBlaze mode
+    const titleEl = document.querySelector('#screen-results .results-title');
+    if (titleEl) titleEl.textContent = 'Your FateBlaze';
+
+    // Build 7-layer cards
+    const layers = generate7Layers(lW, sW, wW, pW, lA, sA, wA, pA);
+    const layersEl = document.getElementById('r-layers');
+    layersEl.style.display = 'flex';
+    layersEl.innerHTML = `
+        <div style="width:100%;text-align:center;margin:8px 0 20px;">
+            <p style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,245,240,.4);">✦ The FateBlaze 7-Layer Framework ✦</p>
+        </div>
+        ${layers.map(layer => `
+        <div class="layer-card">
+            <div class="layer-header">
+                <span class="layer-num">${layer.num}</span>
+                <span class="layer-name" style="color:${layer.color}">${layer.name}</span>
+            </div>
+            <p class="layer-text">${layer.text}</p>
+        </div>
+        `).join('')}
+    `;
+}
+
+/* ═══════════════════════════════════════
+   RENDER RESULTS
+═══════════════════════════════════════ */
+function renderResults(d) {
+    document.getElementById('r-statement').textContent = d.statement;
+    document.getElementById('r-closing').textContent   = d.closing;
+
+    // Pillar cards
+    document.getElementById('r-grid').innerHTML = d.cards.map(c => `
+        <div class="pillar-card ${c.key}">
+            <div class="pc-icon">${c.icon}</div>
+            <div class="pc-title">${c.title}</div>
+            <p class="pc-text">${c.text}</p>
+        </div>
+    `).join('');
+
+    // Results Venn
+    const lLabel = d.cards[0].words.slice(0,2).map(cap).join(', ') || 'Passion';
+    const sLabel = d.cards[1].words.slice(0,2).map(cap).join(', ') || 'Gifts';
+    const wLabel = d.cards[2].words.slice(0,2).map(cap).join(', ') || 'Impact';
+    const pLabel = d.cards[3].words.slice(0,2).map(cap).join(', ') || 'Value';
+
+    document.getElementById('r-venn').innerHTML = buildResultsVenn(lLabel, sLabel, wLabel, pLabel);
+}
+
+/* ═══════════════════════════════════════
+   SVG VENN DIAGRAMS
+═══════════════════════════════════════ */
+function buildWelcomeVenn() {
+    return `<svg viewBox="0 0 420 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+  <defs>
+    <radialGradient id="wg-love"   cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#C0200F" stop-opacity=".55"/><stop offset="100%" stop-color="#C0200F" stop-opacity=".08"/></radialGradient>
+    <radialGradient id="wg-skill"  cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FF5A1F" stop-opacity=".55"/><stop offset="100%" stop-color="#FF5A1F" stop-opacity=".08"/></radialGradient>
+    <radialGradient id="wg-world"  cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#F97316" stop-opacity=".55"/><stop offset="100%" stop-color="#F97316" stop-opacity=".08"/></radialGradient>
+    <radialGradient id="wg-paid"   cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFAB40" stop-opacity=".55"/><stop offset="100%" stop-color="#FFAB40" stop-opacity=".08"/></radialGradient>
+    <filter id="wg-glow"><feGaussianBlur stdDeviation="3" result="b"/><feComposite in="SourceGraphic" in2="b" operator="over"/></filter>
+  </defs>
+
+  <!-- Passion (top-left) -->
+  <circle cx="172" cy="178" r="115" fill="url(#wg-love)"  stroke="#C0200F" stroke-width="1.5" stroke-opacity=".6" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur=".9s" begin=".1s" fill="freeze"/>
+  </circle>
+
+  <!-- Talent (top-right) -->
+  <circle cx="248" cy="178" r="115" fill="url(#wg-skill)" stroke="#FF5A1F" stroke-width="1.5" stroke-opacity=".6" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur=".9s" begin=".4s" fill="freeze"/>
+  </circle>
+
+  <!-- Impact (bottom-left) -->
+  <circle cx="172" cy="248" r="115" fill="url(#wg-world)" stroke="#F97316" stroke-width="1.5" stroke-opacity=".6" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur=".9s" begin=".7s" fill="freeze"/>
+  </circle>
+
+  <!-- Wealth (bottom-right) -->
+  <circle cx="248" cy="248" r="115" fill="url(#wg-paid)"  stroke="#FFAB40" stroke-width="1.5" stroke-opacity=".6" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur=".9s" begin="1.0s" fill="freeze"/>
+  </circle>
+
+  <!-- Corner labels -->
+  <text x="80"  y="128" text-anchor="middle" font-family="Outfit,sans-serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#C0200F" fill-opacity="0">
+    LOVE<animate attributeName="fill-opacity" from="0" to="1" dur=".6s" begin=".1s" fill="freeze"/>
+  </text>
+  <text x="340" y="128" text-anchor="middle" font-family="Outfit,sans-serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#FF5A1F" fill-opacity="0">
+    TALENT<animate attributeName="fill-opacity" from="0" to="1" dur=".6s" begin=".4s" fill="freeze"/>
+  </text>
+  <text x="80"  y="330" text-anchor="middle" font-family="Outfit,sans-serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#F97316" fill-opacity="0">
+    IMPACT<animate attributeName="fill-opacity" from="0" to="1" dur=".6s" begin=".7s" fill="freeze"/>
+  </text>
+  <text x="340" y="330" text-anchor="middle" font-family="Outfit,sans-serif" font-size="17" font-weight="700" letter-spacing="1.5" fill="#FFAB40" fill-opacity="0">
+    WEALTH<animate attributeName="fill-opacity" from="0" to="1" dur=".6s" begin="1.0s" fill="freeze"/>
+  </text>
+
+  <!-- Intersection labels -->
+  <text x="210" y="148" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" fill-opacity="0">
+    PASSION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.5s" fill="freeze"/>
+  </text>
+  <text x="143" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" fill-opacity="0">
+    MISSION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.6s" fill="freeze"/>
+  </text>
+  <text x="277" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" fill-opacity="0">
+    VOCATION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.7s" fill="freeze"/>
+  </text>
+  <text x="210" y="284" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" fill-opacity="0">
+    PROFESSION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.8s" fill="freeze"/>
+  </text>
+
+  <!-- Centre Ikigai -->
+  <text x="210" y="208" text-anchor="middle" font-family="Playfair Display,serif" font-style="italic" font-size="17" fill="white" fill-opacity="0" filter="url(#wg-glow)">
+    Ikigai<animate attributeName="fill-opacity" from="0" to=".95" dur=".8s" begin="1.4s" fill="freeze"/>
+  </text>
+  <text x="210" y="224" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity="0">
+    生き甲斐<animate attributeName="fill-opacity" from="0" to=".5" dur=".8s" begin="1.6s" fill="freeze"/>
+  </text>
+</svg>`;
+}
+
+function buildResultsVenn(lL, sL, wL, pL) {
+    const trim = (s, n) => s.length > n ? s.substring(0, n) + '…' : s;
+    return `<svg viewBox="0 0 420 415" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+  <defs>
+    <radialGradient id="rg-love"   cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#C0200F" stop-opacity=".45"/><stop offset="100%" stop-color="#C0200F" stop-opacity=".07"/></radialGradient>
+    <radialGradient id="rg-skill"  cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FF5A1F" stop-opacity=".45"/><stop offset="100%" stop-color="#FF5A1F" stop-opacity=".07"/></radialGradient>
+    <radialGradient id="rg-world"  cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#F97316" stop-opacity=".45"/><stop offset="100%" stop-color="#F97316" stop-opacity=".07"/></radialGradient>
+    <radialGradient id="rg-paid"   cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFAB40" stop-opacity=".45"/><stop offset="100%" stop-color="#FFAB40" stop-opacity=".07"/></radialGradient>
+    <radialGradient id="rg-center" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="white" stop-opacity=".22"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient>
+    <filter id="rg-glow"><feGaussianBlur stdDeviation="5" result="b"/><feComposite in="SourceGraphic" in2="b" operator="over"/></filter>
+  </defs>
+
+  <circle cx="172" cy="185" r="113" fill="url(#rg-love)"  stroke="#C0200F" stroke-width="1.5" stroke-opacity=".7"/>
+  <circle cx="248" cy="185" r="113" fill="url(#rg-skill)" stroke="#FF5A1F" stroke-width="1.5" stroke-opacity=".7"/>
+  <circle cx="172" cy="245" r="113" fill="url(#rg-world)" stroke="#F97316" stroke-width="1.5" stroke-opacity=".7"/>
+  <circle cx="248" cy="245" r="113" fill="url(#rg-paid)"  stroke="#FFAB40" stroke-width="1.5" stroke-opacity=".7"/>
+
+  <!-- Pulsing centre -->
+  <ellipse cx="210" cy="215" rx="33" ry="30" fill="url(#rg-center)" filter="url(#rg-glow)">
+    <animate attributeName="rx" values="33;39;33" dur="3.2s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="30;36;30" dur="3.2s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Pillar labels -->
+  <text x="102" y="162" text-anchor="middle" font-family="Outfit,sans-serif" font-size="14" font-weight="700" letter-spacing="1" fill="#C0200F" fill-opacity=".95">LOVE</text>
+  <text x="318" y="162" text-anchor="middle" font-family="Outfit,sans-serif" font-size="14" font-weight="700" letter-spacing="1" fill="#FF5A1F" fill-opacity=".95">TALENT</text>
+  <text x="102" y="293" text-anchor="middle" font-family="Outfit,sans-serif" font-size="14" font-weight="700" letter-spacing="1" fill="#F97316" fill-opacity=".95">IMPACT</text>
+  <text x="318" y="293" text-anchor="middle" font-family="Outfit,sans-serif" font-size="14" font-weight="700" letter-spacing="1" fill="#FFAB40" fill-opacity=".95">WEALTH</text>
+
+  <!-- Theme sub-labels -->
+  <text x="102" y="175" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-style="italic" fill="white" fill-opacity=".55">${trim(lL,16)}</text>
+  <text x="318" y="175" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-style="italic" fill="white" fill-opacity=".55">${trim(sL,16)}</text>
+  <text x="102" y="306" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-style="italic" fill="white" fill-opacity=".55">${trim(wL,16)}</text>
+  <text x="318" y="306" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-style="italic" fill="white" fill-opacity=".55">${trim(pL,16)}</text>
+
+  <!-- Intersection labels -->
+  <text x="210" y="154" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Passion</text>
+  <text x="148" y="217" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Mission</text>
+  <text x="272" y="217" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Vocation</text>
+  <text x="210" y="280" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Profession</text>
+
+  <!-- Centre Ikigai label -->
+  <text x="210" y="211" text-anchor="middle" font-family="Playfair Display,serif" font-style="italic" font-size="14" fill="white" fill-opacity=".97" filter="url(#rg-glow)">Ikigai</text>
+  <text x="210" y="225" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="white" fill-opacity=".55">生き甲斐</text>
+</svg>`;
+}
+
+/* ═══════════════════════════════════════
+   RESTART
+═══════════════════════════════════════ */
+function restart() {
+    currentMode = 'standard';
+    QS = QS_STANDARD;
+    idx = 0;
+    ans = Array(QS.length).fill('');
+    const layersEl = document.getElementById('r-layers');
+    if (layersEl) { layersEl.style.display = 'none'; layersEl.innerHTML = ''; }
+    showScreen('welcome');
+}
+
+/* ═══════════════════════════════════════
+   BOOT
+═══════════════════════════════════════ */
+document.getElementById('welcome-venn').innerHTML = buildWelcomeVenn();
+
+// Show welcome on load
+(function boot() {
+    const w = document.getElementById('screen-welcome');
+    w.classList.add('active');
+    requestAnimationFrame(() => requestAnimationFrame(() => w.classList.add('visible')));
+})();
+</script>
+</body>
+</html>
