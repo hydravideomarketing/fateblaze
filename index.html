@@ -730,6 +730,123 @@
             width: 100%;
         }
 
+        /* ─── Section eyebrow ─── */
+        .section-eyebrow {
+            width: 100%;
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: rgba(255,245,240,.42);
+            margin: 6px 0 16px;
+        }
+
+        /* ─── Quote + theme chips inside pillar cards ─── */
+        .pc-quote {
+            margin-top: 12px;
+            padding-left: 12px;
+            border-left: 2px solid rgba(255,255,255,.18);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(255,245,240,.62);
+        }
+        .pc-themes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
+        .pc-chip {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: .03em;
+            padding: 3px 10px;
+            border-radius: 100px;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.12);
+            color: rgba(255,245,240,.7);
+        }
+
+        /* ─── Overlap zone cards ─── */
+        .overlaps-wrap {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 480px) { .overlaps-wrap { grid-template-columns: 1fr; } }
+        .overlap-card {
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 20px;
+            padding: 20px 22px;
+        }
+        .overlap-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .03em;
+            color: #f0ebff;
+            margin-bottom: 3px;
+        }
+        .overlap-pair {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--world);
+            opacity: .85;
+            margin-bottom: 10px;
+        }
+        .overlap-text { font-size: 13px; line-height: 1.62; color: rgba(255,245,240,.72); }
+
+        /* ─── Insight cards (tensions / next steps) ─── */
+        .insight-card {
+            width: 100%;
+            background: rgba(255,255,255,.045);
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 22px;
+            padding: 26px 30px;
+            margin-bottom: 22px;
+        }
+        .insight-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            margin-bottom: 13px;
+        }
+        .insight-label.tensions { color: var(--skills); }
+        .insight-label.actions  { color: var(--paid); }
+        .insight-text { font-size: 14px; line-height: 1.75; color: rgba(255,245,240,.78); }
+        .actions-list { margin: 0; padding-left: 20px; }
+        .actions-list li {
+            font-size: 14px;
+            line-height: 1.65;
+            color: rgba(255,245,240,.82);
+            margin-bottom: 12px;
+        }
+        .actions-list li:last-child { margin-bottom: 0; }
+        .actions-list li::marker { color: var(--paid); font-weight: 700; }
+
+        /* ─── Collapsible layer cards ─── */
+        .layer-card { list-style: none; }
+        .layer-card > summary { list-style: none; cursor: pointer; outline: none; }
+        .layer-card > summary::-webkit-details-marker { display: none; }
+        .layer-card > summary .layer-header { margin-bottom: 0; }
+        .layer-toggle {
+            margin-left: auto;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: rgba(255,245,240,.4);
+            transition: transform .25s ease;
+            flex-shrink: 0;
+        }
+        details[open] > summary .layer-toggle { transform: rotate(45deg); }
+        .layer-card > .layer-text { margin-top: 12px; }
+
         /* Print-only elements hidden on screen */
         .print-only { display: none; }
 
@@ -810,6 +927,22 @@
                 break-inside: avoid;
             }
             .layer-text { color: #333 !important; }
+            /* Force all collapsible layers open in print */
+            .layer-card > .layer-text { display: block !important; }
+            details:not([open]) > :not(summary) { display: block !important; }
+            .layer-toggle { display: none !important; }
+
+            .section-eyebrow { color: #777 !important; }
+            .pc-quote { color: #555 !important; border-left-color: #ccc !important; }
+            .pc-chip { background: #f0f0f0 !important; border-color: #ddd !important; color: #555 !important; }
+            .overlap-card { background: #fafafa !important; border: 1px solid #ddd !important; break-inside: avoid; }
+            .overlap-title { color: #222 !important; }
+            .overlap-pair { color: #C05A00 !important; }
+            .overlap-text { color: #333 !important; }
+            .insight-card { background: #faf6f4 !important; border: 1px solid #e3ccc6 !important; break-inside: avoid; }
+            .insight-label.tensions { color: #B03A00 !important; }
+            .insight-label.actions  { color: #9A6A00 !important; }
+            .insight-text, .actions-list li { color: #333 !important; }
 
             .closing-card {
                 background: #faf6f4 !important;
@@ -964,7 +1097,21 @@
 
     <div class="results-venn-wrap fu" id="r-venn"></div>
 
+    <p class="section-eyebrow fu">The Four Forces</p>
     <div class="pillar-grid fu" id="r-grid"></div>
+
+    <p class="section-eyebrow fu" id="r-overlaps-eyebrow" style="display:none;">Where They Overlap</p>
+    <div class="overlaps-wrap fu" id="r-overlaps"></div>
+
+    <div class="insight-card fu" id="r-tensions-wrap" style="display:none;">
+        <p class="insight-label tensions">⚖ &nbsp; Tensions &amp; Gaps</p>
+        <p class="insight-text" id="r-tensions"></p>
+    </div>
+
+    <div class="insight-card fu" id="r-actions-wrap" style="display:none;">
+        <p class="insight-label actions">→ &nbsp; Your Next Steps</p>
+        <ol class="actions-list" id="r-actions"></ol>
+    </div>
 
     <div class="layer-cards fu" id="r-layers" style="display:none;"></div>
 
@@ -973,6 +1120,12 @@
     </div>
 
     <div class="results-actions fu no-print">
+        <button class="btn-ghost" onclick="copyShareLink(this)">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M6 10l4-4M6.5 4.5l.7-.7a3 3 0 0 1 4.2 4.2l-.7.7M9.5 11.5l-.7.7a3 3 0 0 1-4.2-4.2l.7-.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Copy Share Link
+        </button>
         <button class="btn-ghost" onclick="downloadPDF()">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                 <path d="M8 2v8m0 0L5 7m3 3l3-3M3 12v1.5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1387,19 +1540,65 @@ const STOP = new Set([
     'always','often','sometimes','rarely','usually','finally','simply'
 ]);
 
-function getWords(texts) {
-    return texts.join(' ').toLowerCase().split(/[\s,.\!\?\;\:\-\"\'\/\(\)]+/)
-        .filter(w => w.length >= 4 && !STOP.has(w) && /^[a-z]+$/.test(w));
+/* Adjectives / vague words that read badly when used as nouns
+   (this is what produced "channelled toward true") */
+const ADJ = new Set([
+    'true','real','good','great','best','better','nice','deep','hard','easy','huge',
+    'tiny','big','small','new','old','free','full','whole','main','able','sure','clear',
+    'basic','simple','certain','various','actual','total','entire','overall','general',
+    'specific','important','different','similar','several','enough','many','more','most',
+    'much','very','lot','kind','sort','type','thing','stuff','happy','glad','high','low',
+    'long','short','early','late','right','wrong','same','fun','cool','real','able','each',
+    'every','only','also','well','back','away','here','there','then','than','some','such',
+]);
+
+function isThemeWord(w) {
+    return w.length >= 4 && !STOP.has(w) && !ADJ.has(w) && /^[a-z]+$/.test(w);
 }
 
-function topWords(texts, n = 10) {
-    const words = getWords(texts);
+/* Conservative normaliser — does NOT mangle (the old code turned "friends" → "friend") */
+function normTheme(w) {
+    if (w.endsWith('ing')) return w;
+    if (w.endsWith('ies') && w.length > 4) return w.slice(0, -3) + 'y';
+    if (w.endsWith('sses')) return w.slice(0, -2);
+    if (w.endsWith('s') && !w.endsWith('ss') && !w.endsWith('us') && !w.endsWith('is') && w.length > 4)
+        return w.slice(0, -1);
+    return w;
+}
+
+/* Top recurring NOUN-ish themes for a pillar — used only as labels / chips,
+   never injected mid-sentence */
+function topThemes(texts, n = 4) {
+    const words = texts.join(' ').toLowerCase()
+        .split(/[\s,.!?;:\-"'\/()]+/).filter(isThemeWord);
     const freq = {};
     words.forEach(w => {
-        const key = w.endsWith('ing') ? w : (w.endsWith('s') && w.length > 4) ? w.slice(0,-1) : w;
-        freq[key] = (freq[key] || 0) + (w.endsWith('ing') ? 1.4 : 1);
+        const k = normTheme(w);
+        freq[k] = (freq[k] || 0) + (w.endsWith('ing') ? 1.3 : 1);
     });
-    return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n).map(e=>e[0]);
+    return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, n).map(e => e[0]);
+}
+
+function joinLen(texts) { return texts.join(' ').trim().length; }
+
+/* Pull the most substantive real sentence the user wrote — shown verbatim
+   as a quote, so it can never come out grammatically broken */
+function bestQuote(texts) {
+    const joined = texts.filter(Boolean).join(' ').trim();
+    if (joined.replace(/\s/g, '').length < 25) return '';
+    let sents = joined.split(/(?<=[.!?])\s+|\n+/).map(s => s.trim())
+        .filter(s => s.split(/\s+/).length >= 5);
+    if (!sents.length) sents = texts.filter(t => t && t.trim().split(/\s+/).length >= 4).map(t => t.trim());
+    if (!sents.length) return '';
+    sents.sort((a, b) => b.length - a.length);
+    let q = sents[0].replace(/^["'\s]+|["'\s]+$/g, '');
+    if (q.length > 150) q = q.slice(0, 147).replace(/\s+\S*$/, '') + '…';
+    return q;
+}
+
+function safeTheme(arr, fallback) {
+    const t = (arr && arr[0]) || '';
+    return t && t.length > 2 ? t : fallback;
 }
 
 function pillarAnswers(p) {
@@ -1408,64 +1607,118 @@ function pillarAnswers(p) {
 
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
-function summaryFor(pillar, words, texts) {
-    const allText = texts.filter(t => t && t.length > 4).join(' ');
-    const act  = words.find(w => w.endsWith('ing') && w.length > 5) || words[0] || 'your passion';
-    const noun = words.find(w => !w.endsWith('ing') && w !== act) || words[1] || 'your unique gifts';
-
-    if (allText.length < 25) {
-        return {
-            love:   'You have deep passions that ignite your inner fire — pursuits that feel natural, energising, and fully expressive of who you are.',
-            skills: 'You possess unique strengths built over time — abilities that come naturally to you and that others recognise and trust.',
-            world:  'You carry a genuine desire to make a meaningful difference and contribute to something larger than yourself.',
-            paid:   'You have knowledge and skills that create real value for others — work the world will recognise and invest in.'
-        }[pillar];
-    }
-
-    const opts = {
-        love: [
-            `You feel most alive when engaged in ${act} — especially anything touching ${noun}. These aren't side interests; they're expressions of your truest self.`,
-            `Time dissolves when you're ${act}, and your energy naturally gravitates toward ${noun}. These threads weave the fabric of your authentic identity.`,
-            `Your heart lights up around ${act} and ${noun}. When you honour these passions, you're not just happy — you're fully, undeniably yourself.`,
-        ],
-        skills: [
-            `You have a genuine gift for ${act} and a deep fluency in ${noun}. Others see your capability even when you take it for granted.`,
-            `Your strengths run deep in ${noun} — abilities that feel almost effortless to you but leave others impressed. Your gift for ${act} is central to who you are.`,
-            `When it comes to ${act} and ${noun}, you operate at a level others struggle to reach. That isn't luck — it's years of being wired this way.`,
-        ],
-        world: [
-            `You see clearly what needs ${act} in the world, particularly around ${noun}. Your role is to be the bridge between what is and what could be.`,
-            `The world deeply needs someone with your capacity for ${act} and your understanding of ${noun}. Your mission is already visible in what moves you most.`,
-            `You're called to address ${noun} through ${act}. The problems that frustrate others fuel you — that's the signature of a true calling.`,
-        ],
-        paid: [
-            `You can create lasting value through ${act}, especially in the arena of ${noun}. People will seek out and pay for exactly what you uniquely offer.`,
-            `Your ability to ${act} within the domain of ${noun} has real market worth. The sweet spot of what you do well and what others need is your professional home.`,
-            `There's a real and sustainable living available to you through ${act} and your expertise in ${noun}. Purpose and livelihood don't have to be separate.`,
-        ],
-    };
-
-    const arr = opts[pillar];
-    return arr[Math.floor(Math.random() * arr.length)];
+/* Evergreen, well-written pillar paragraphs — NO token injection, so they can
+   never come out broken. Personalisation comes from the quote + chips beneath. */
+const PILLAR_TEXT = {
+    love: [
+        "These are the pursuits that pull you in and don't let go — where hours vanish and you feel most like yourself. They aren't hobbies to fit around real life; they're signals pointing at what your life is meant to be built around.",
+        "When you described what you love, you were describing your natural fuel. The work that draws on this won't feel like discipline — it'll feel like coming home to something you already are.",
+    ],
+    skills: [
+        "What feels effortless to you is rarely effortless to everyone else. The things you take for granted are precisely the abilities others notice, rely on, and would happily pay to borrow.",
+        "These are your earned and innate strengths — the capabilities that show up in your proudest moments. Leaning into them isn't arrogance; it's the fastest path to becoming genuinely exceptional.",
+    ],
+    world: [
+        "What frustrates or moves you is a compass. The problems you can't walk past are the ones you're wired to work on — and the world quietly needs people willing to care about exactly those things.",
+        "You carry a sense of who you want to help and what you want to leave behind. That instinct is the seed of a mission — direction that outlasts any single job.",
+    ],
+    paid: [
+        "There's a real, sustainable living available where your skills meet genuine demand. Purpose and income aren't enemies — the goal is the overlap, where what you're great at is also what people will pay for.",
+        "You already create value others want; the work is to name it sharply and aim it where demand is real. That's the difference between a passion and a profession.",
+    ],
+};
+function pillarText(key, depth) {
+    const arr = PILLAR_TEXT[key];
+    return depth === 'thin' ? arr[0] : arr[Math.floor(Math.random() * arr.length)];
 }
 
-function ikigaiStatement(lW, sW, wW, pW) {
-    const act  = lW.find(w => w.endsWith('ing')) || lW[0] || 'creating';
-    const skill = sW.find(w => !w.endsWith('ing')) || sW[0] || 'your unique strengths';
-    const world = wW[0] || 'meaningful change';
+function thinStatement() {
+    return "Your ikigai is the convergence of your deepest passions, your natural strengths, the world's needs, and the value you can offer. Your answers point toward it — and the fuller you fill them in, the sharper it becomes.";
+}
 
-    const allFilled = ans.filter(a => a && a.length > 8).length;
-    if (allFilled < 4) {
-        return "Your ikigai is the powerful convergence of your deepest passions, your natural strengths, the world's deepest needs, and the value you offer — a purpose waiting to be fully lived.";
-    }
+function buildStatement(L, S, W, P) {
+    const a = safeTheme(L, 'what absorbs you'), b = safeTheme(S, 'your natural strengths'),
+          c = safeTheme(W, 'the change you want to see'), d = safeTheme(P, 'work the world rewards');
+    return `Your ikigai lives where your love of ${a} meets your talent for ${b} — aimed at ${c}, and made sustainable through ${d}. When those four forces pull the same way, work stops feeling like work and starts feeling like purpose.`;
+}
 
-    const opts = [
-        `Your ikigai lives where ${act} meets ${skill} — channelled toward ${world}. When you bring your full self to work that matters, you stop working and start living your purpose.`,
-        `You are here to harness your gift for ${skill} in service of ${world}, doing it with the joy of someone who simply loves ${act}. That intersection is your reason for being.`,
-        `The world needs exactly what you have: a person who finds deep meaning in ${act}, commands real skill in ${skill}, and channels it all toward ${world}. That is your ikigai.`,
-        `Your purpose is to use your strength in ${skill} to bring about ${world} — and the secret is you'll love every moment, because it comes naturally through your love of ${act}.`,
+/* The four ikigai overlap zones — correct pairings (fixes the old Vocation/Profession swap) */
+function buildOverlaps(L, S, W, P) {
+    const a = safeTheme(L, 'what you love'), b = safeTheme(S, 'your strengths'),
+          c = safeTheme(W, "the world's needs"), d = safeTheme(P, 'real demand');
+    return [
+        { key:'passion',    title:'Passion',    pair:'Love + Talent',
+          text:`Where your love of ${a} meets your talent for ${b}. This is what you could lose hours in and still do better than most — protect it.` },
+        { key:'mission',    title:'Mission',    pair:'Love + Impact',
+          text:`Where your love of ${a} meets ${c}. This is the work that would make your life feel like it mattered, beyond any paycheck.` },
+        { key:'profession', title:'Profession', pair:'Talent + Wealth',
+          text:`Where your talent for ${b} meets what people will pay for. This is your most bankable, hardest-to-copy edge.` },
+        { key:'vocation',   title:'Vocation',   pair:'Impact + Wealth',
+          text:`Where ${c} meets a real living. A mission that can also sustain you is the rarest and most durable kind of work.` },
     ];
-    return opts[Math.floor(Math.random() * opts.length)];
+}
+
+function buildTensions(s) {
+    const lens = [['what you love', s.lLen], ['your strengths', s.sLen],
+                  ["the world's needs", s.wLen], ['your earning power', s.pLen]];
+    const thin = lens.filter(x => x[1] < 40).map(x => x[0]);
+    const parts = [];
+    const overlap = s.L.some(x => s.P.includes(x));
+    if (s.L.length && s.P.length && !overlap) {
+        parts.push(`What lights you up (${safeTheme(s.L, 'your passion')}) and what reliably pays (${safeTheme(s.P, 'your market')}) aren't the same thing yet. That gap isn't a flaw — it's the exact bridge worth designing on purpose.`);
+    }
+    if (thin.length === 1) {
+        parts.push(`You said the least about ${thin[0]} — that corner of your ikigai is worth revisiting when you have a quiet moment.`);
+    } else if (thin.length > 1) {
+        parts.push(`Your answers on ${thin.slice(0, -1).join(', ')} and ${thin[thin.length - 1]} were brief. Those blank spaces are often where the most growth is hiding.`);
+    }
+    return parts.join(' ');
+}
+
+function buildActions(L, S, W) {
+    const a = safeTheme(L, 'what you love'), b = safeTheme(S, 'your strengths'),
+          c = safeTheme(W, 'the people you want to help');
+    return [
+        `Block two hours this week for one thing at the intersection of ${a} and ${b} — no audience, no pressure, just to feel it.`,
+        `Name one specific person or group connected to ${c}, and reach out to exactly one of them this week.`,
+        `Pick the force that felt thinnest as you answered and spend ten minutes writing more about it. Depth there is your next unlock.`,
+    ];
+}
+
+/* Orchestrator — produces the full result contract from the user's answers */
+function buildLocalAnalysis() {
+    const lA = pillarAnswers('love'), sA = pillarAnswers('skills'),
+          wA = pillarAnswers('world'), pA = pillarAnswers('paid');
+    const L = topThemes(lA), S = topThemes(sA), W = topThemes(wA), P = topThemes(pA);
+    const lLen = joinLen(lA), sLen = joinLen(sA), wLen = joinLen(wA), pLen = joinLen(pA);
+    const depth = (lLen + sLen + wLen + pLen) < 120 ? 'thin' : 'rich';
+
+    const quad = (key, icon, title, themes, texts) => ({
+        key, icon, title,
+        text: pillarText(key, depth),
+        quote: bestQuote(texts),
+        themes: themes.slice(0, 3).map(cap),
+    });
+
+    return {
+        statement: depth === 'thin' ? thinStatement() : buildStatement(L, S, W, P),
+        closing: closingMessage(),
+        quadrants: [
+            quad('love',   '💜', 'What You Love',       L, lA),
+            quad('skills', '💛', 'Your Strengths',      S, sA),
+            quad('world',  '💚', "World's Needs",       W, wA),
+            quad('paid',   '💙', 'Your Earning Power',  P, pA),
+        ],
+        overlaps: buildOverlaps(L, S, W, P),
+        tensions: depth === 'thin' ? '' : buildTensions({ lLen, sLen, wLen, pLen, L, P }),
+        actions: buildActions(L, S, W),
+        depth,
+        _venn: {
+            L: L.slice(0, 2).map(cap), S: S.slice(0, 2).map(cap),
+            W: W.slice(0, 2).map(cap), P: P.slice(0, 2).map(cap),
+        },
+        _themes: { L, S, W, P },
+    };
 }
 
 function closingMessage() {
@@ -1478,41 +1731,86 @@ function closingMessage() {
     return opts[Math.floor(Math.random() * opts.length)];
 }
 
-function analyzeAndShow() {
+async function analyzeAndShow() {
     showScreen('analyzing');
 
-    setTimeout(() => {
-        const lA = pillarAnswers('love'),
-              sA = pillarAnswers('skills'),
-              wA = pillarAnswers('world'),
-              pA = pillarAnswers('paid');
+    // Compute a local result first — instant, reliable, always works
+    const local = buildLocalAnalysis();
+    const localLayers = currentMode === 'fateblaze' ? generate7Layers(local._themes) : null;
 
-        const lW = topWords(lA), sW = topWords(sA),
-              wW = topWords(wA), pW = topWords(pA);
+    // Try AI synthesis if /api/analyze is deployed; keep the orb animation up ≥2.2s
+    const minWait = new Promise(r => setTimeout(r, 2200));
+    let data = local, layers = localLayers;
+    try {
+        const [ai] = await Promise.all([getAIAnalysis(), minWait]);
+        if (ai && ai.data) {
+            data = ai.data;
+            layers = ai.layers || (currentMode === 'fateblaze' ? localLayers : null);
+        }
+    } catch (e) { await minWait; }
 
-        const data = {
-            statement : ikigaiStatement(lW, sW, wW, pW),
-            closing   : closingMessage(),
-            cards: [
-                { key:'love',   icon:'💜', title:'What You Love',        text: summaryFor('love',   lW, lA), words: lW },
-                { key:'skills', icon:'💛', title:'Your Strengths',       text: summaryFor('skills', sW, sA), words: sW },
-                { key:'world',  icon:'💚', title:"World's Needs",        text: summaryFor('world',  wW, wA), words: wW },
-                { key:'paid',   icon:'💙', title:'Your Earning Power',    text: summaryFor('paid',   pW, pA), words: pW },
-            ],
+    paintResults(data, layers);
+    saveResult({ mode: currentMode, data, layers, ts: Date.now() });
+    clearProgress();
+    showScreen('results');
+}
+
+/* Optional AI synthesis. Returns null on ANY failure so the app silently falls
+   back to the local engine (works on file:// and on Vercel without a key). */
+async function getAIAnalysis() {
+    try {
+        const qa = QS.map((q, i) => ({ pillar: q.p, question: q.q, answer: (ans[i] || '').trim() }))
+                     .filter(x => x.answer.length > 0);
+        if (qa.length < 4) return null;
+        const resp = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: currentMode, qa }),
+        });
+        if (!resp.ok) return null;
+        const json = await resp.json();
+        if (!json || !json.statement || !Array.isArray(json.quadrants)) return null;
+        return {
+            data: {
+                statement: json.statement,
+                closing: json.closing || closingMessage(),
+                quadrants: json.quadrants,
+                overlaps: json.overlaps || [],
+                tensions: json.tensions || '',
+                actions: json.actions || [],
+                depth: 'rich',
+                _venn: json._venn || deriveVennFromQuadrants(json.quadrants),
+            },
+            layers: Array.isArray(json.layers) ? json.layers : null,
         };
+    } catch (e) { return null; }
+}
 
-        const layers = currentMode === 'fateblaze'
-            ? generate7Layers(lW, sW, wW, pW, lA, sA, wA, pA)
-            : null;
+function deriveVennFromQuadrants(qs) {
+    const pick = k => { const q = (qs || []).find(x => x.key === k); return ((q && q.themes) || []).slice(0, 2); };
+    return { L: pick('love'), S: pick('skills'), W: pick('world'), P: pick('paid') };
+}
 
-        paintResults(data, layers);
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/[&<>"]/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m]));
+}
 
-        // Persist the completed result so it survives closing the app
-        saveResult({ mode: currentMode, data, layers, ts: Date.now() });
-        clearProgress();
-
-        showScreen('results');
-    }, 2900);
+/* Back-compat: map old v1 {cards} results into the new {quadrants} shape */
+function normalizeResult(d) {
+    if (!d) return { statement: '', quadrants: [] };
+    if (!d.quadrants && d.cards) {
+        d.quadrants = d.cards.map(c => ({
+            key: c.key, icon: c.icon, title: c.title, text: c.text,
+            quote: '', themes: (c.words || []).slice(0, 3).map(cap),
+        }));
+        if (!d._venn) {
+            const pick = k => { const c = d.cards.find(x => x.key === k); return ((c && c.words) || []).slice(0, 2).map(cap); };
+            d._venn = { L: pick('love'), S: pick('skills'), W: pick('world'), P: pick('paid') };
+        }
+    }
+    if (!d.quadrants) d.quadrants = [];
+    return d;
 }
 
 /* Render a result from either a fresh analysis or a saved object */
@@ -1539,18 +1837,13 @@ function showSavedResult(r) {
 /* ═══════════════════════════════════════
    FATEBLAZE 7-LAYER OUTPUT
 ═══════════════════════════════════════ */
-function generate7Layers(lW, sW, wW, pW, lA, sA, wA, pA) {
-    const act    = lW.find(w => w.endsWith('ing')) || lW[0] || 'creating';
-    const skill  = sW.find(w => !w.endsWith('ing')) || sW[0] || 'your craft';
-    const cause  = wW[0] || 'meaningful impact';
-    const market = pW.find(w => !w.endsWith('ing')) || pW[0] || 'your work';
-    const gift   = sW[1] || sW[0] || 'deep expertise';
-    const love   = lW[1] || lW[0] || 'your passion';
-
-    const lText = lA.filter(a=>a&&a.length>10).join(' ');
-    const sText = sA.filter(a=>a&&a.length>10).join(' ');
-    const wText = wA.filter(a=>a&&a.length>10).join(' ');
-    const pText = pA.filter(a=>a&&a.length>10).join(' ');
+function generate7Layers(themes) {
+    const t = themes || { L: [], S: [], W: [], P: [] };
+    const act    = safeTheme(t.L, 'what you love');
+    const skill  = safeTheme(t.S, 'your craft');
+    const cause  = safeTheme(t.W, 'meaningful impact');
+    const market = safeTheme(t.P, 'your work');
+    const gift   = (t.S && t.S[1]) || skill;
 
     return [
         {
@@ -1605,42 +1898,77 @@ function paintLayers(layers) {
     layersEl.innerHTML = `
         <div style="width:100%;text-align:center;margin:8px 0 20px;">
             <p style="font-family:Outfit,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,245,240,.4);">✦ The FateBlaze 7-Layer Framework ✦</p>
+            <p style="font-size:11px;color:rgba(255,245,240,.32);margin-top:5px;">tap any layer to expand</p>
         </div>
-        ${layers.map(layer => `
-        <div class="layer-card">
-            <div class="layer-header">
-                <span class="layer-num">${layer.num}</span>
-                <span class="layer-name" style="color:${layer.color}">${layer.name}</span>
-            </div>
-            <p class="layer-text">${layer.text}</p>
-        </div>
+        ${layers.map((layer, i) => `
+        <details class="layer-card"${i < 2 ? ' open' : ''}>
+            <summary>
+                <div class="layer-header">
+                    <span class="layer-num">${esc(layer.num)}</span>
+                    <span class="layer-name" style="color:${esc(layer.color)}">${esc(layer.name)}</span>
+                    <span class="layer-toggle">+</span>
+                </div>
+            </summary>
+            <p class="layer-text">${esc(layer.text)}</p>
+        </details>
         `).join('')}
     `;
 }
 
 /* ═══════════════════════════════════════
-   RENDER RESULTS
+   RENDER RESULTS  (statement, forces, overlaps, tensions, next steps, venn)
 ═══════════════════════════════════════ */
-function renderResults(d) {
-    document.getElementById('r-statement').textContent = d.statement;
-    document.getElementById('r-closing').textContent   = d.closing;
+function renderResults(dIn) {
+    const d = normalizeResult(dIn);
 
-    // Pillar cards
-    document.getElementById('r-grid').innerHTML = d.cards.map(c => `
-        <div class="pillar-card ${c.key}">
-            <div class="pc-icon">${c.icon}</div>
-            <div class="pc-title">${c.title}</div>
-            <p class="pc-text">${c.text}</p>
-        </div>
-    `).join('');
+    document.getElementById('r-statement').textContent = d.statement || '';
+    document.getElementById('r-closing').textContent   = d.closing || '';
 
-    // Results Venn
-    const lLabel = d.cards[0].words.slice(0,2).map(cap).join(', ') || 'Passion';
-    const sLabel = d.cards[1].words.slice(0,2).map(cap).join(', ') || 'Gifts';
-    const wLabel = d.cards[2].words.slice(0,2).map(cap).join(', ') || 'Impact';
-    const pLabel = d.cards[3].words.slice(0,2).map(cap).join(', ') || 'Value';
+    // The four forces — each with the user's own quote + theme chips
+    document.getElementById('r-grid').innerHTML = d.quadrants.map(c => `
+        <div class="pillar-card ${esc(c.key)}">
+            <div class="pc-icon">${esc(c.icon)}</div>
+            <div class="pc-title">${esc(c.title)}</div>
+            <p class="pc-text">${esc(c.text)}</p>
+            ${c.quote ? `<p class="pc-quote">“${esc(c.quote)}”</p>` : ''}
+            ${(c.themes && c.themes.length)
+                ? `<div class="pc-themes">${c.themes.map(t => `<span class="pc-chip">${esc(t)}</span>`).join('')}</div>`
+                : ''}
+        </div>`).join('');
 
-    document.getElementById('r-venn').innerHTML = buildResultsVenn(lLabel, sLabel, wLabel, pLabel);
+    // Overlap zones
+    const ow = document.getElementById('r-overlaps'),
+          oe = document.getElementById('r-overlaps-eyebrow');
+    if (d.overlaps && d.overlaps.length) {
+        oe.style.display = 'block';
+        ow.style.display = 'grid';
+        ow.innerHTML = d.overlaps.map(o => `
+            <div class="overlap-card">
+                <div class="overlap-title">${esc(o.title)}</div>
+                <div class="overlap-pair">${esc(o.pair)}</div>
+                <p class="overlap-text">${esc(o.text)}</p>
+            </div>`).join('');
+    } else { oe.style.display = 'none'; ow.style.display = 'none'; ow.innerHTML = ''; }
+
+    // Tensions & gaps
+    const tw = document.getElementById('r-tensions-wrap');
+    if (d.tensions && d.tensions.trim()) {
+        tw.style.display = 'block';
+        document.getElementById('r-tensions').textContent = d.tensions;
+    } else { tw.style.display = 'none'; }
+
+    // Next steps
+    const aw = document.getElementById('r-actions-wrap');
+    if (d.actions && d.actions.length) {
+        aw.style.display = 'block';
+        document.getElementById('r-actions').innerHTML = d.actions.map(a => `<li>${esc(a)}</li>`).join('');
+    } else { aw.style.display = 'none'; }
+
+    // Venn (labels from themes)
+    const v = d._venn || {};
+    const lab = (arr, fb) => (arr && arr.length ? arr.map(cap).join(', ') : fb);
+    document.getElementById('r-venn').innerHTML = buildResultsVenn(
+        lab(v.L, 'Passion'), lab(v.S, 'Gifts'), lab(v.W, 'Impact'), lab(v.P, 'Value'));
 }
 
 /* ═══════════════════════════════════════
@@ -1698,10 +2026,10 @@ function buildWelcomeVenn() {
     MISSION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.6s" fill="freeze"/>
   </text>
   <text x="277" y="215" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" fill-opacity="0">
-    VOCATION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.7s" fill="freeze"/>
+    PROFESSION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.7s" fill="freeze"/>
   </text>
   <text x="210" y="284" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="white" fill-opacity="0">
-    PROFESSION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.8s" fill="freeze"/>
+    VOCATION<animate attributeName="fill-opacity" from="0" to=".45" dur=".6s" begin="1.8s" fill="freeze"/>
   </text>
 
   <!-- Centre Ikigai -->
@@ -1716,7 +2044,7 @@ function buildWelcomeVenn() {
 
 function buildResultsVenn(lL, sL, wL, pL) {
     const trim = (s, n) => s.length > n ? s.substring(0, n) + '…' : s;
-    return `<svg viewBox="0 0 420 415" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+    return `<svg viewBox="0 60 420 350" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
   <defs>
     <radialGradient id="rg-love"   cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#C0200F" stop-opacity=".45"/><stop offset="100%" stop-color="#C0200F" stop-opacity=".07"/></radialGradient>
     <radialGradient id="rg-skill"  cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FF5A1F" stop-opacity=".45"/><stop offset="100%" stop-color="#FF5A1F" stop-opacity=".07"/></radialGradient>
@@ -1752,8 +2080,8 @@ function buildResultsVenn(lL, sL, wL, pL) {
   <!-- Intersection labels -->
   <text x="210" y="154" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Passion</text>
   <text x="148" y="217" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Mission</text>
-  <text x="272" y="217" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Vocation</text>
-  <text x="210" y="280" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Profession</text>
+  <text x="272" y="217" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Profession</text>
+  <text x="210" y="280" text-anchor="middle" font-family="Inter,sans-serif" font-size="9" fill="white" fill-opacity=".42">Vocation</text>
 
   <!-- Centre Ikigai label -->
   <text x="210" y="211" text-anchor="middle" font-family="Playfair Display,serif" font-style="italic" font-size="14" fill="white" fill-opacity=".97" filter="url(#rg-glow)">Ikigai</text>
@@ -1791,6 +2119,53 @@ function downloadPDF() {
 }
 
 /* ═══════════════════════════════════════
+   SHARE LINK  (encodes the result into the URL hash)
+═══════════════════════════════════════ */
+function copyShareLink(btn) {
+    const r = loadResult();
+    if (!r || !r.data) { flashBtn(btn, 'Nothing to share yet'); return; }
+    try {
+        const json = JSON.stringify({ mode: r.mode, data: r.data, layers: r.layers || null });
+        const b64 = btoa(unescape(encodeURIComponent(json)));
+        const url = location.origin + location.pathname + '#s=' + b64;
+        history.replaceState(null, '', '#s=' + b64);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(
+                () => flashBtn(btn, '✓ Link copied!'),
+                () => promptCopy(url)
+            );
+        } else { promptCopy(url); }
+    } catch (e) { flashBtn(btn, 'Could not create link'); }
+}
+function flashBtn(btn, msg) {
+    if (!btn) return;
+    if (!btn.dataset.orig) btn.dataset.orig = btn.innerHTML;
+    btn.innerHTML = esc(msg);
+    setTimeout(() => { if (btn.dataset.orig) btn.innerHTML = btn.dataset.orig; }, 1900);
+}
+function promptCopy(url) { try { window.prompt('Copy this link:', url); } catch (e) {} }
+
+/* If the page is opened with #s=… show that shared result directly */
+function tryLoadSharedResult() {
+    const m = (location.hash || '').match(/[#&]s=([^&]+)/);
+    if (!m) return false;
+    try {
+        const json = decodeURIComponent(escape(atob(m[1])));
+        const obj = JSON.parse(json);
+        if (obj && obj.data) {
+            currentMode = obj.mode || 'standard';
+            QS = currentMode === 'fateblaze' ? QS_FATEBLAZE : QS_STANDARD;
+            paintResults(obj.data, obj.layers || null);
+            const r = document.getElementById('screen-results');
+            r.classList.add('active');
+            requestAnimationFrame(() => requestAnimationFrame(() => r.classList.add('visible')));
+            return true;
+        }
+    } catch (e) {}
+    return false;
+}
+
+/* ═══════════════════════════════════════
    BOOT
 ═══════════════════════════════════════ */
 document.getElementById('welcome-venn').innerHTML = buildWelcomeVenn();
@@ -1798,6 +2173,7 @@ document.getElementById('welcome-venn').innerHTML = buildWelcomeVenn();
 // Show welcome on load
 (function boot() {
     refreshWelcomeActions();   // surface Resume / View-saved buttons if data exists
+    if (tryLoadSharedResult()) return;   // opened via a shared link → show that result
     const w = document.getElementById('screen-welcome');
     w.classList.add('active');
     requestAnimationFrame(() => requestAnimationFrame(() => w.classList.add('visible')));
