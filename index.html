@@ -2126,7 +2126,10 @@ function copyShareLink(btn) {
     if (!r || !r.data) { flashBtn(btn, 'Nothing to share yet'); return; }
     try {
         const json = JSON.stringify({ mode: r.mode, data: r.data, layers: r.layers || null });
-        const b64 = btoa(unescape(encodeURIComponent(json)));
+        // URL-safe base64 (no +, /, or =) so the link survives email/messaging apps,
+        // which often convert "+" to a space and break a standard-base64 link.
+        const b64 = btoa(unescape(encodeURIComponent(json)))
+            .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
         const url = location.origin + location.pathname + '#s=' + b64;
         history.replaceState(null, '', '#s=' + b64);
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2150,7 +2153,11 @@ function tryLoadSharedResult() {
     const m = (location.hash || '').match(/[#&]s=([^&]+)/);
     if (!m) return false;
     try {
-        const json = decodeURIComponent(escape(atob(m[1])));
+        // Tolerant decode: recover "+" that became a space in transit, reverse the
+        // url-safe swaps, and re-pad. Handles both new and older shared links.
+        let s = m[1].replace(/ /g, '+').replace(/-/g, '+').replace(/_/g, '/');
+        while (s.length % 4) s += '=';
+        const json = decodeURIComponent(escape(atob(s)));
         const obj = JSON.parse(json);
         if (obj && obj.data) {
             currentMode = obj.mode || 'standard';
